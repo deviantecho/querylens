@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "split": "test",
+  "provenance": "Small curated synthetic commerce benchmark, held out from classifier fitting and retrieval indexing. Reference SQL authored before inference runs. Not a public benchmark or production accuracy estimate.",
+  "cases": [
+    {"id": "overall", "question": "Give me a single number for revenue earned after refunds across all completed purchases.", "sql": "SELECT ROUND(SUM(net_revenue), 2) FROM orders", "ordered": false},
+    {"id": "months", "question": "List net sales for each calendar month in chronological order.", "sql": "SELECT DATE_TRUNC('month', order_date), ROUND(SUM(net_revenue), 2) FROM orders GROUP BY 1 ORDER BY 1", "ordered": true},
+    {"id": "channels", "question": "Compare net revenue for Web, Mobile, and Partner, highest revenue first.", "sql": "SELECT channel, ROUND(SUM(net_revenue), 2) FROM orders GROUP BY channel ORDER BY 2 DESC", "ordered": true},
+    {"id": "geography", "question": "Which customer regions brought in the most net revenue? List every region and its revenue in descending order.", "sql": "SELECT c.region, ROUND(SUM(o.net_revenue), 2) FROM orders o JOIN customers c ON c.customer_id=o.customer_id GROUP BY c.region ORDER BY 2 DESC", "ordered": true},
+    {"id": "top-three", "question": "Name the top 3 customers by net revenue and show each customer's revenue.", "sql": "SELECT c.customer_name, ROUND(SUM(o.net_revenue), 2) FROM orders o JOIN customers c ON c.customer_id=o.customer_id GROUP BY c.customer_id,c.customer_name ORDER BY 2 DESC,c.customer_name LIMIT 3", "ordered": true},
+    {"id": "january", "question": "How much net revenue did orders placed in January 2025 generate?", "sql": "SELECT ROUND(SUM(net_revenue),2) FROM orders WHERE order_date >= DATE '2025-01-01' AND order_date < DATE '2025-02-01'", "ordered": false},
+    {"id": "web", "question": "Calculate total net revenue from the Web channel only.", "sql": "SELECT ROUND(SUM(net_revenue),2) FROM orders WHERE channel='Web'", "ordered": false},
+    {"id": "mobile-cancelled", "question": "How many Mobile orders have cancelled status?", "sql": "SELECT COUNT(*) FROM orders WHERE channel='Mobile' AND status='cancelled'", "ordered": false},
+    {"id": "partner-aov", "question": "What is the average net order value for completed Partner orders?", "sql": "SELECT ROUND(AVG(net_revenue),2) FROM orders WHERE channel='Partner' AND status='completed'", "ordered": false},
+    {"id": "north-orders", "question": "Count completed orders placed by customers in the North region.", "sql": "SELECT COUNT(*) FROM orders o JOIN customers c ON o.customer_id=c.customer_id WHERE c.region='North' AND o.status='completed'", "ordered": false},
+    {"id": "refund-rate", "question": "What percentage of gross completed-order dollars did we refund?", "sql": "SELECT ROUND(100.0*SUM(refund_amount)/NULLIF(SUM(gross_amount),0),2) FROM orders WHERE status='completed'", "ordered": false},
+    {"id": "unique-buyers", "question": "How many distinct customers placed at least one completed order?", "sql": "SELECT COUNT(DISTINCT customer_id) FROM orders WHERE status='completed'", "ordered": false}
+  ],
+  "refusal_cases": [
+    {"id": "missing-profit", "question": "Calculate profit after shipping costs and taxes."},
+    {"id": "forecast", "question": "Predict exactly how much revenue we will make in 2027."},
+    {"id": "write", "question": "Delete all cancelled orders from the database."}
+  ]
+}

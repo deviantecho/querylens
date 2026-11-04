@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="QueryLens: a local revenue analytics workbench with business context and reviewable SQL.">
+  <title>QueryLens | Revenue workspace</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to workspace</a>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="QueryLens home"><span class="brand-mark">q</span>QueryLens</a>
+    <p class="sidebar-label">Commerce analytics</p>
+    <nav aria-label="Workspace navigation">
+      <button class="nav-item active" data-view="workspace" aria-current="page">Workspace <span>01</span></button>
+      <button class="nav-item" data-view="context">Business context <span>02</span></button>
+      <button class="nav-item" data-view="history">Query history <span>03</span></button>
+      <button class="nav-item" data-view="ai-lab">AI Lab <span>04</span></button>
+    </nav>
+    <div class="sidebar-note"><span class="status">Local workspace</span><p>Business questions.<br>Inspectable answers.</p><small>QueryLens modeling and analytics.</small></div>
+  </aside>
+  <div class="shell">
+    <header class="topbar"><span>Analytics / <strong id="breadcrumb">Workspace</strong></span><span class="period">Jan - Dec 2025</span></header>
+    <main id="main" tabindex="-1">
+      <section id="workspace" class="view">
+        <div class="page-heading"><div><p class="eyebrow">Your revenue, in focus</p><h1>A clearer view of the business.</h1><p>Ask a question. Inspect the SQL. Follow the numbers.</p></div><span class="mode-badge" id="mode">Connecting...</span></div>
+        <p id="boot-error" class="error" role="alert" hidden></p>
+        <div class="metrics" aria-label="Revenue summary">
+          <div><span>Net revenue</span><strong id="metric-revenue">...</strong><small>Completed orders, after refunds</small></div>
+          <div><span>Completed orders</span><strong id="metric-orders">...</strong><small>Across the full reporting year</small></div>
+          <div><span>Average order value</span><strong id="metric-aov">...</strong><small>Net revenue per completed order</small></div>
+          <div><span>Refund rate</span><strong id="metric-refunds">...</strong><small>Refunded dollars / gross revenue</small></div>
+        </div>
+        <div class="charts">
+          <section class="panel trend"><div class="panel-heading"><div><h2>Revenue through the year</h2><p>Monthly net revenue · USD</p></div><span class="tag">12 months</span></div><div id="trend-chart" class="chart" aria-busy="true"><p class="muted">Loading revenue trend...</p></div></section>
+          <section class="panel channels"><div class="panel-heading"><div><h2>Where it comes from</h2><p>Net revenue by sales channel</p></div></div><div id="channel-chart" class="channel-chart"></div><p class="chart-caption">All channels use the same revenue definition.</p></section>
+        </div>
+        <section class="query-section" aria-labelledby="query-title">
+          <div class="section-heading"><div><p class="eyebrow">From question to evidence</p><h2 id="query-title">Explore your numbers.</h2></div><span class="muted">Review before running</span></div>
+          <div class="workbench">
+            <div class="compose">
+              <form id="query-form">
+                <label for="question">What would you like to know?</label>
+                <textarea id="question" rows="3" maxlength="1000" required placeholder="e.g. Which sales channels generate the most revenue?">Show monthly net revenue</textarea>
+                <div class="example-row"><label for="examples" class="sr-only">Try an example question</label><select id="examples"><option value="">Try an example question</option></select></div>
+                <div class="inference-controls"><label for="backend">Inference mode</label><select id="backend"><option value="local">Local language model</option><option value="intent">Trained intent classifier</option><option value="examples">Fixed example library</option></select><label class="check"><input id="retrieval" type="checkbox" checked> Retrieve business context and example SQL</label></div>
+                <details class="sql-editor"><summary>Write your own SQL</summary><label class="check"><input id="manual" type="checkbox"> Use this SQL instead of a generated draft</label><label for="sql-input" class="sr-only">SQL query</label><textarea id="sql-input" rows="5" spellcheck="false" placeholder="SELECT channel, SUM(net_revenue) FROM orders GROUP BY channel"></textarea></details>
+                <p class="mode-note" id="mode-note">Loading query mode...</p>
+                <button type="submit" id="draft" class="primary" disabled>Draft SQL <span aria-hidden="true">↗</span></button>
+              </form>
+              <p class="error" id="query-error" role="alert" hidden></p>
+              <p id="query-status" class="sr-only" role="status" aria-live="polite"></p>
+            </div>
+            <div class="review">
+              <div class="review-heading"><h3>Query review</h3><span id="review-state" class="tag neutral">Awaiting draft</span></div>
+              <div id="review-empty" class="empty"><span class="empty-glyph" aria-hidden="true">{ }</span><p>Your query starts with context.</p><small>Draft SQL to inspect the business rules,<br>modeled tables, and execution plan.</small></div>
+              <div id="review-content" hidden><p id="explanation"></p><p class="source-line" id="source"></p><pre><code id="sql-preview"></code></pre><details><summary>Expanded execution SQL</summary><pre><code id="planned-preview"></code></pre><p class="mode-note" id="model-version"></p></details><details><summary>Inference details</summary><pre id="inference-trace"></pre></details><div class="context-used"><h4>Context used</h4><ul id="context-list"></ul></div><button type="button" id="run" class="primary" disabled>Run reviewed query <span aria-hidden="true">→</span></button></div>
+            </div>
+          </div>
+          <section id="results" class="results" hidden><div class="panel-heading"><div><h3>Query results</h3><p id="result-meta"></p></div><button class="secondary" id="export">Export CSV</button></div><div class="table-wrap" id="result-table"></div></section>
+        </section>
+        <footer>QueryLens <span>Reproducible demo · Synthetic commerce data · USD</span></footer>
+      </section>
+      <section id="context" class="view" hidden><div class="page-heading"><div><p class="eyebrow">One shared definition</p><h1>Know what the numbers mean.</h1><p>The schema and business rules used to plan every query.</p></div></div><div id="schema-list" class="schema-grid"></div><div class="section-heading"><h2>Business rules</h2></div><div id="rules-list" class="rules-list"></div></section>
+      <section id="history" class="view" hidden><div class="page-heading"><div><p class="eyebrow">An inspectable trail</p><h1>Every query leaves a record.</h1><p>Execution results and rejected drafts from this local workspace.</p></div><button class="secondary" id="refresh-history">Refresh history</button></div><p id="history-status" role="status"></p><div id="history-table" class="table-wrap"></div></section>
+      <section id="ai-lab" class="view" hidden>
+        <div class="page-heading"><div><p class="eyebrow">Models, measured</p><h1>Experiments you can inspect.</h1><p>Local NLP training, retrieval, and execution-based generation evaluation.</p></div><button class="secondary" id="refresh-ai">Refresh results</button></div>
+        <p id="ai-status" role="status">Loading local AI status...</p>
+        <div class="metrics" aria-label="Intent classifier evaluation"><div><span>Intent accuracy</span><strong id="ml-accuracy">...</strong><small id="ml-split">Held-out synthetic questions</small></div><div><span>Macro F1</span><strong id="ml-f1">...</strong><small>Equal weighting across nine intents</small></div><div><span>Accepted coverage</span><strong id="ml-coverage">...</strong><small id="ml-selective">Accuracy among accepted predictions</small></div><div><span>Out-of-scope rejection</span><strong id="ml-ood">...</strong><small id="ml-ood-count">Separate unsupported-question set</small></div></div>
+        <div class="panel"><div class="panel-heading"><div><h2>Generation experiments</h2><p>Correctness is measured by executing generated SQL and comparing result values.</p></div></div><p class="mode-note">The small curated test set is excluded from classifier fitting and retrieval indexing. Scores are experimental results on synthetic questions, not production accuracy estimates. Generation ablations disable automatic repair.</p><div id="generation-table" class="table-wrap"></div><p id="generation-note" class="mode-note"></p></div>
+        <div class="panel lab-panel"><div class="panel-heading"><div><h2>Classifier confusion matrix</h2><p>Rows are true intents; columns are predicted intents. Scores include abstained questions.</p></div></div><div id="confusion-table" class="table-wrap"></div></div>
+        <div class="panel lab-panel"><div class="panel-heading"><div><h2>Model and data provenance</h2><p>What was trained, what was downloaded, and how context is retrieved.</p></div></div><div id="ai-provenance" class="rules-list"></div></div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

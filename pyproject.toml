@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "querylens-analytics"
+version = "0.3.0"
+description = "An independent analytics workbench with declarative models and reviewable SQL"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = ["duckdb==1.5.6", "sqlglot==30.29.0", "scikit-learn==1.9.1"]
+
+[project.optional-dependencies]
+dev = ["pytest==9.2.0", "ruff==0.17.3"]
+local = ["llama-cpp-python==0.3.36"]
+
+[project.scripts]
+querylens = "querylens.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["querylens"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests_querylens"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"]

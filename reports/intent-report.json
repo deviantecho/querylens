@@ -1,0 +1,1301 @@
+{
+  "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+  "sha256": "afcd6573044e79a5b47a0c4262436ff551027f09efc3110a9559b97f103ff486",
+  "sklearn_version": "1.9.1",
+  "train_count": 108,
+  "dev_count": 27,
+  "test_count": 36,
+  "threshold": {
+    "probability": 0.25,
+    "margin": 0.2,
+    "selection": "Maximize accepted correct dev questions subject to >=95% selective precision and rejection of all dev OOD questions. Test split never tunes thresholds."
+  },
+  "training_ms": 382.05,
+  "evaluation": {
+    "test_count": 36,
+    "accuracy": 0.8333,
+    "macro_f1": 0.8361,
+    "coverage": 0.75,
+    "selective_accuracy": 0.963,
+    "ood_count": 12,
+    "ood_rejection_rate": 1.0,
+    "labels": [
+      "aov",
+      "cancelled",
+      "channels",
+      "completed",
+      "customers",
+      "monthly",
+      "refunds",
+      "regions",
+      "total"
+    ],
+    "confusion_matrix": [
+      [
+        3,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        2,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        3,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4
+      ]
+    ],
+    "per_class": {
+      "aov": {
+        "precision": 1.0,
+        "recall": 0.75,
+        "f1-score": 0.8571428571428571,
+        "support": 4.0
+      },
+      "cancelled": {
+        "precision": 0.6666666666666666,
+        "recall": 0.5,
+        "f1-score": 0.5714285714285714,
+        "support": 4.0
+      },
+      "channels": {
+        "precision": 1.0,
+        "recall": 0.75,
+        "f1-score": 0.8571428571428571,
+        "support": 4.0
+      },
+      "completed": {
+        "precision": 0.5,
+        "recall": 0.75,
+        "f1-score": 0.6,
+        "support": 4.0
+      },
+      "customers": {
+        "precision": 0.8,
+        "recall": 1.0,
+        "f1-score": 0.8888888888888888,
+        "support": 4.0
+      },
+      "monthly": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 4.0
+      },
+      "refunds": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 4.0
+      },
+      "regions": {
+        "precision": 0.75,
+        "recall": 0.75,
+        "f1-score": 0.75,
+        "support": 4.0
+      },
+      "total": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 4.0
+      },
+      "accuracy": 0.8333333333333334,
+      "macro avg": {
+        "precision": 0.8574074074074074,
+        "recall": 0.8333333333333334,
+        "f1-score": 0.8360670194003527,
+        "support": 36.0
+      },
+      "weighted avg": {
+        "precision": 0.8574074074074074,
+        "recall": 0.8333333333333334,
+        "f1-score": 0.8360670194003527,
+        "support": 36.0
+      }
+    },
+    "predictions": [
+      {
+        "question": "How much revenue is left after returns across all sales?",
+        "expected": "total",
+        "intent": "total",
+        "probability": 0.7083,
+        "margin": 0.626,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "total",
+            "probability": 0.7083
+          },
+          {
+            "intent": "regions",
+            "probability": 0.0823
+          },
+          {
+            "intent": "channels",
+            "probability": 0.0549
+          }
+        ]
+      },
+      {
+        "question": "I need one figure for the business's total earnings",
+        "expected": "total",
+        "intent": "total",
+        "probability": 0.5632,
+        "margin": 0.4088,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "total",
+            "probability": 0.5632
+          },
+          {
+            "intent": "monthly",
+            "probability": 0.1545
+          },
+          {
+            "intent": "regions",
+            "probability": 0.0812
+          }
+        ]
+      },
+      {
+        "question": "Add together the net sales for the entire reporting period",
+        "expected": "total",
+        "intent": "total",
+        "probability": 0.3121,
+        "margin": 0.1352,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "total",
+            "probability": 0.3121
+          },
+          {
+            "intent": "regions",
+            "probability": 0.1769
+          },
+          {
+            "intent": "channels",
+            "probability": 0.1364
+          }
+        ]
+      },
+      {
+        "question": "What is the full-year revenue total excluding cancelled purchases?",
+        "expected": "total",
+        "intent": "total",
+        "probability": 0.5262,
+        "margin": 0.2446,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "total",
+            "probability": 0.5262
+          },
+          {
+            "intent": "cancelled",
+            "probability": 0.2815
+          },
+          {
+            "intent": "completed",
+            "probability": 0.0728
+          }
+        ]
+      },
+      {
+        "question": "How did net sales evolve throughout the year on a monthly basis?",
+        "expected": "monthly",
+        "intent": "monthly",
+        "probability": 0.5377,
+        "margin": 0.3304,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "monthly",
+            "probability": 0.5377
+          },
+          {
+            "intent": "total",
+            "probability": 0.2073
+          },
+          {
+            "intent": "channels",
+            "probability": 0.0532
+          }
+        ]
+      },
+      {
+        "question": "Arrange the year's revenue figures into calendar-month buckets",
+        "expected": "monthly",
+        "intent": "monthly",
+        "probability": 0.7071,
+        "margin": 0.6078,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "monthly",
+            "probability": 0.7071
+          },
+          {
+            "intent": "total",
+            "probability": 0.0993
+          },
+          {
+            "intent": "regions",
+            "probability": 0.0431
+          }
+        ]
+      },
+      {
+        "question": "I want to see the monthwise sales trajectory",
+        "expected": "monthly",
+        "intent": "monthly",
+        "probability": 0.3364,
+        "margin": 0.2048,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "monthly",
+            "probability": 0.3364
+          },
+          {
+            "intent": "refunds",
+            "probability": 0.1316
+          },
+          {
+            "intent": "regions",
+            "probability": 0.1041
+          }
+        ]
+      },
+      {
+        "question": "List the revenue timeline with one point for each month",
+        "expected": "monthly",
+        "intent": "monthly",
+        "probability": 0.6683,
+        "margin": 0.5756,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "monthly",
+            "probability": 0.6683
+          },
+          {
+            "intent": "regions",
+            "probability": 0.0927
+          },
+          {
+            "intent": "channels",
+            "probability": 0.0591
+          }
+        ]
+      },
+      {
+        "question": "How is our net turnover distributed among selling channels?",
+        "expected": "channels",
+        "intent": "channels",
+        "probability": 0.4422,
+        "margin": 0.2434,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "channels",
+            "probability": 0.4422
+          },
+          {
+            "intent": "total",
+            "probability": 0.1988
+          },
+          {
+            "intent": "aov",
+            "probability": 0.1249
+          }
+        ]
+      },
+      {
+        "question": "Rank the sales routes by how much money they generated",
+        "expected": "channels",
+        "intent": "regions",
+        "probability": 0.2476,
+        "margin": 0.0267,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "regions",
+            "probability": 0.2476
+          },
+          {
+            "intent": "channels",
+            "probability": 0.2209
+          },
+          {
+            "intent": "total",
+            "probability": 0.184
+          }
+        ]
+      },
+      {
+        "question": "Compare the revenue contributions of web, mobile, and partners",
+        "expected": "channels",
+        "intent": "channels",
+        "probability": 0.4635,
+        "margin": 0.3182,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "channels",
+            "probability": 0.4635
+          },
+          {
+            "intent": "regions",
+            "probability": 0.1453
+          },
+          {
+            "intent": "monthly",
+            "probability": 0.0799
+          }
+        ]
+      },
+      {
+        "question": "Which channel accounts for the highest net sales?",
+        "expected": "channels",
+        "intent": "channels",
+        "probability": 0.616,
+        "margin": 0.5031,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "channels",
+            "probability": 0.616
+          },
+          {
+            "intent": "regions",
+            "probability": 0.113
+          },
+          {
+            "intent": "customers",
+            "probability": 0.1027
+          }
+        ]
+      },
+      {
+        "question": "How do net earnings differ between customer regions?",
+        "expected": "regions",
+        "intent": "regions",
+        "probability": 0.641,
+        "margin": 0.5618,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "regions",
+            "probability": 0.641
+          },
+          {
+            "intent": "monthly",
+            "probability": 0.0792
+          },
+          {
+            "intent": "total",
+            "probability": 0.066
+          }
+        ]
+      },
+      {
+        "question": "Give a geographic split of the money customers brought in",
+        "expected": "regions",
+        "intent": "customers",
+        "probability": 0.3647,
+        "margin": 0.2162,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "customers",
+            "probability": 0.3647
+          },
+          {
+            "intent": "refunds",
+            "probability": 0.1485
+          },
+          {
+            "intent": "regions",
+            "probability": 0.1155
+          }
+        ]
+      },
+      {
+        "question": "Rank customer regions according to their contribution to sales",
+        "expected": "regions",
+        "intent": "regions",
+        "probability": 0.6418,
+        "margin": 0.555,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "regions",
+            "probability": 0.6418
+          },
+          {
+            "intent": "customers",
+            "probability": 0.0867
+          },
+          {
+            "intent": "channels",
+            "probability": 0.068
+          }
+        ]
+      },
+      {
+        "question": "Summarize turnover for each of the four regions",
+        "expected": "regions",
+        "intent": "regions",
+        "probability": 0.4565,
+        "margin": 0.3104,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "regions",
+            "probability": 0.4565
+          },
+          {
+            "intent": "monthly",
+            "probability": 0.1461
+          },
+          {
+            "intent": "channels",
+            "probability": 0.0801
+          }
+        ]
+      },
+      {
+        "question": "Identify the five purchasers who contribute the most net revenue",
+        "expected": "customers",
+        "intent": "customers",
+        "probability": 0.6092,
+        "margin": 0.4709,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "customers",
+            "probability": 0.6092
+          },
+          {
+            "intent": "regions",
+            "probability": 0.1382
+          },
+          {
+            "intent": "total",
+            "probability": 0.0685
+          }
+        ]
+      },
+      {
+        "question": "Which five customer accounts are worth the most in sales?",
+        "expected": "customers",
+        "intent": "customers",
+        "probability": 0.5728,
+        "margin": 0.3471,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "customers",
+            "probability": 0.5728
+          },
+          {
+            "intent": "regions",
+            "probability": 0.2257
+          },
+          {
+            "intent": "total",
+            "probability": 0.0389
+          }
+        ]
+      },
+      {
+        "question": "List our five leading buyers with their net spending",
+        "expected": "customers",
+        "intent": "customers",
+        "probability": 0.6941,
+        "margin": 0.6277,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "customers",
+            "probability": 0.6941
+          },
+          {
+            "intent": "total",
+            "probability": 0.0664
+          },
+          {
+            "intent": "aov",
+            "probability": 0.0466
+          }
+        ]
+      },
+      {
+        "question": "Show the first five names in the customer sales ranking",
+        "expected": "customers",
+        "intent": "customers",
+        "probability": 0.6065,
+        "margin": 0.4321,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "customers",
+            "probability": 0.6065
+          },
+          {
+            "intent": "regions",
+            "probability": 0.1744
+          },
+          {
+            "intent": "total",
+            "probability": 0.054
+          }
+        ]
+      },
+      {
+        "question": "On average, how much net money is earned per completed purchase?",
+        "expected": "aov",
+        "intent": "aov",
+        "probability": 0.6875,
+        "margin": 0.5929,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "aov",
+            "probability": 0.6875
+          },
+          {
+            "intent": "total",
+            "probability": 0.0946
+          },
+          {
+            "intent": "completed",
+            "probability": 0.0593
+          }
+        ]
+      },
+      {
+        "question": "What is the mean ticket size once refunds are accounted for?",
+        "expected": "aov",
+        "intent": "aov",
+        "probability": 0.4449,
+        "margin": 0.1869,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "aov",
+            "probability": 0.4449
+          },
+          {
+            "intent": "total",
+            "probability": 0.258
+          },
+          {
+            "intent": "refunds",
+            "probability": 0.0733
+          }
+        ]
+      },
+      {
+        "question": "Divide net turnover by the number of successful orders",
+        "expected": "aov",
+        "intent": "aov",
+        "probability": 0.2602,
+        "margin": 0.0211,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "aov",
+            "probability": 0.2602
+          },
+          {
+            "intent": "completed",
+            "probability": 0.2391
+          },
+          {
+            "intent": "cancelled",
+            "probability": 0.2293
+          }
+        ]
+      },
+      {
+        "question": "Report AOV using only completed purchases",
+        "expected": "aov",
+        "intent": "completed",
+        "probability": 0.3964,
+        "margin": 0.0713,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "completed",
+            "probability": 0.3964
+          },
+          {
+            "intent": "aov",
+            "probability": 0.3251
+          },
+          {
+            "intent": "cancelled",
+            "probability": 0.075
+          }
+        ]
+      },
+      {
+        "question": "Of all gross sales dollars from completed orders, what percentage was paid back?",
+        "expected": "refunds",
+        "intent": "refunds",
+        "probability": 0.6344,
+        "margin": 0.4728,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "refunds",
+            "probability": 0.6344
+          },
+          {
+            "intent": "total",
+            "probability": 0.1616
+          },
+          {
+            "intent": "completed",
+            "probability": 0.077
+          }
+        ]
+      },
+      {
+        "question": "Express returned money as a proportion of gross completed sales",
+        "expected": "refunds",
+        "intent": "refunds",
+        "probability": 0.6988,
+        "margin": 0.5941,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "refunds",
+            "probability": 0.6988
+          },
+          {
+            "intent": "completed",
+            "probability": 0.1047
+          },
+          {
+            "intent": "aov",
+            "probability": 0.0407
+          }
+        ]
+      },
+      {
+        "question": "What is the refund ratio in percentage terms by dollar amount?",
+        "expected": "refunds",
+        "intent": "refunds",
+        "probability": 0.6661,
+        "margin": 0.5664,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "refunds",
+            "probability": 0.6661
+          },
+          {
+            "intent": "aov",
+            "probability": 0.0997
+          },
+          {
+            "intent": "total",
+            "probability": 0.0849
+          }
+        ]
+      },
+      {
+        "question": "Calculate the share of revenue lost to customer refunds",
+        "expected": "refunds",
+        "intent": "refunds",
+        "probability": 0.4619,
+        "margin": 0.271,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "refunds",
+            "probability": 0.4619
+          },
+          {
+            "intent": "total",
+            "probability": 0.1909
+          },
+          {
+            "intent": "regions",
+            "probability": 0.1318
+          }
+        ]
+      },
+      {
+        "question": "How many purchases made it through to completion?",
+        "expected": "completed",
+        "intent": "completed",
+        "probability": 0.5055,
+        "margin": 0.2235,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "completed",
+            "probability": 0.5055
+          },
+          {
+            "intent": "cancelled",
+            "probability": 0.282
+          },
+          {
+            "intent": "channels",
+            "probability": 0.0417
+          }
+        ]
+      },
+      {
+        "question": "Give the number of order records whose status indicates success",
+        "expected": "completed",
+        "intent": "cancelled",
+        "probability": 0.3848,
+        "margin": 0.058,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "cancelled",
+            "probability": 0.3848
+          },
+          {
+            "intent": "completed",
+            "probability": 0.3268
+          },
+          {
+            "intent": "aov",
+            "probability": 0.081
+          }
+        ]
+      },
+      {
+        "question": "Count the transactions that finished successfully",
+        "expected": "completed",
+        "intent": "completed",
+        "probability": 0.6232,
+        "margin": 0.495,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "completed",
+            "probability": 0.6232
+          },
+          {
+            "intent": "cancelled",
+            "probability": 0.1282
+          },
+          {
+            "intent": "regions",
+            "probability": 0.0492
+          }
+        ]
+      },
+      {
+        "question": "What was our volume of completed purchases?",
+        "expected": "completed",
+        "intent": "completed",
+        "probability": 0.4519,
+        "margin": 0.2471,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "completed",
+            "probability": 0.4519
+          },
+          {
+            "intent": "refunds",
+            "probability": 0.2048
+          },
+          {
+            "intent": "aov",
+            "probability": 0.116
+          }
+        ]
+      },
+      {
+        "question": "What was the volume of purchases that got called off?",
+        "expected": "cancelled",
+        "intent": "completed",
+        "probability": 0.3241,
+        "margin": 0.0286,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "completed",
+            "probability": 0.3241
+          },
+          {
+            "intent": "cancelled",
+            "probability": 0.2955
+          },
+          {
+            "intent": "refunds",
+            "probability": 0.1541
+          }
+        ]
+      },
+      {
+        "question": "Tell me how many orders ended in cancellation",
+        "expected": "cancelled",
+        "intent": "cancelled",
+        "probability": 0.4727,
+        "margin": 0.1638,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "cancelled",
+            "probability": 0.4727
+          },
+          {
+            "intent": "completed",
+            "probability": 0.3089
+          },
+          {
+            "intent": "total",
+            "probability": 0.0749
+          }
+        ]
+      },
+      {
+        "question": "Count all the transactions recorded as cancelled",
+        "expected": "cancelled",
+        "intent": "cancelled",
+        "probability": 0.594,
+        "margin": 0.4422,
+        "accepted": true,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "cancelled",
+            "probability": 0.594
+          },
+          {
+            "intent": "completed",
+            "probability": 0.1517
+          },
+          {
+            "intent": "total",
+            "probability": 0.0895
+          }
+        ]
+      },
+      {
+        "question": "How many customer purchases were canceled rather than completed?",
+        "expected": "cancelled",
+        "intent": "completed",
+        "probability": 0.4589,
+        "margin": 0.0755,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "completed",
+            "probability": 0.4589
+          },
+          {
+            "intent": "cancelled",
+            "probability": 0.3834
+          },
+          {
+            "intent": "regions",
+            "probability": 0.0495
+          }
+        ]
+      }
+    ],
+    "ood_predictions": [
+      {
+        "question": "Forecast sales for 2027",
+        "intent": "regions",
+        "probability": 0.2801,
+        "margin": 0.0555,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "regions",
+            "probability": 0.2801
+          },
+          {
+            "intent": "monthly",
+            "probability": 0.2246
+          },
+          {
+            "intent": "channels",
+            "probability": 0.1524
+          }
+        ]
+      },
+      {
+        "question": "Erase the customer database",
+        "intent": "regions",
+        "probability": 0.5446,
+        "margin": 0.3789,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "regions",
+            "probability": 0.5446
+          },
+          {
+            "intent": "customers",
+            "probability": 0.1657
+          },
+          {
+            "intent": "cancelled",
+            "probability": 0.0501
+          }
+        ]
+      },
+      {
+        "question": "How many units of each product are in stock?",
+        "intent": "completed",
+        "probability": 0.3362,
+        "margin": 0.118,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "completed",
+            "probability": 0.3362
+          },
+          {
+            "intent": "cancelled",
+            "probability": 0.2182
+          },
+          {
+            "intent": "channels",
+            "probability": 0.1112
+          }
+        ]
+      },
+      {
+        "question": "What is our net profit margin?",
+        "intent": "total",
+        "probability": 0.4863,
+        "margin": 0.2134,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "total",
+            "probability": 0.4863
+          },
+          {
+            "intent": "aov",
+            "probability": 0.2729
+          },
+          {
+            "intent": "cancelled",
+            "probability": 0.0507
+          }
+        ]
+      },
+      {
+        "question": "Find revenue for the first quarter",
+        "intent": "total",
+        "probability": 0.2438,
+        "margin": 0.0315,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "total",
+            "probability": 0.2438
+          },
+          {
+            "intent": "customers",
+            "probability": 0.2123
+          },
+          {
+            "intent": "regions",
+            "probability": 0.2066
+          }
+        ]
+      },
+      {
+        "question": "Rank the top 10 customers",
+        "intent": "customers",
+        "probability": 0.7439,
+        "margin": 0.6739,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "customers",
+            "probability": 0.7439
+          },
+          {
+            "intent": "regions",
+            "probability": 0.07
+          },
+          {
+            "intent": "cancelled",
+            "probability": 0.0331
+          }
+        ]
+      },
+      {
+        "question": "Which country has the lowest tax rate?",
+        "intent": "refunds",
+        "probability": 0.253,
+        "margin": 0.0799,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "refunds",
+            "probability": 0.253
+          },
+          {
+            "intent": "regions",
+            "probability": 0.1731
+          },
+          {
+            "intent": "customers",
+            "probability": 0.1056
+          }
+        ]
+      },
+      {
+        "question": "Give me employee salaries",
+        "intent": "total",
+        "probability": 0.243,
+        "margin": 0.083,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "total",
+            "probability": 0.243
+          },
+          {
+            "intent": "monthly",
+            "probability": 0.16
+          },
+          {
+            "intent": "aov",
+            "probability": 0.1568
+          }
+        ]
+      },
+      {
+        "question": "Summarize the latest news",
+        "intent": "monthly",
+        "probability": 0.2003,
+        "margin": 0.0219,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "monthly",
+            "probability": 0.2003
+          },
+          {
+            "intent": "total",
+            "probability": 0.1784
+          },
+          {
+            "intent": "customers",
+            "probability": 0.1056
+          }
+        ]
+      },
+      {
+        "question": "What is the median delivery time?",
+        "intent": "total",
+        "probability": 0.3501,
+        "margin": 0.0949,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "total",
+            "probability": 0.3501
+          },
+          {
+            "intent": "aov",
+            "probability": 0.2552
+          },
+          {
+            "intent": "completed",
+            "probability": 0.1042
+          }
+        ]
+      },
+      {
+        "question": "Show revenue for Web customers only",
+        "intent": "customers",
+        "probability": 0.3175,
+        "margin": 0.1159,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "customers",
+            "probability": 0.3175
+          },
+          {
+            "intent": "regions",
+            "probability": 0.2017
+          },
+          {
+            "intent": "monthly",
+            "probability": 0.1407
+          }
+        ]
+      },
+      {
+        "question": "How much did the business earn in 2024?",
+        "intent": "total",
+        "probability": 0.6656,
+        "margin": 0.6053,
+        "accepted": false,
+        "threshold": 0.25,
+        "alternatives": [
+          {
+            "intent": "total",
+            "probability": 0.6656
+          },
+          {
+            "intent": "monthly",
+            "probability": 0.0603
+          },
+          {
+            "intent": "regions",
+            "probability": 0.0456
+          }
+        ]
+      }
+    ]
+  },
+  "provenance": "Curated synthetic English commerce questions authored for QueryLens. Splits were fixed before fitting. Not real user traffic or an external benchmark."
+}

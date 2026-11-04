@@ -1,0 +1,41 @@
+# Python environments and generated build artifacts
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Local application data and caches
+.querylens/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.duckdb
+*.duckdb.wal
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+*.gguf
+*.gguf.part
+*.joblib
+*.log
+
+# Local configuration
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Personal resume preparation notes
+PORTFOLIO.md
+
+# Browser testing dependencies and output
+node_modules/
+test-results/
+playwright-report/

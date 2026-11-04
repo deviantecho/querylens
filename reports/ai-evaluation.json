@@ -1,0 +1,1831 @@
+{
+  "created": "2026-11-04T20:09:39.424426+00:00",
+  "provenance": "Small curated synthetic commerce benchmark, held out from classifier fitting and retrieval indexing. Reference SQL authored before inference runs. Not a public benchmark or production accuracy estimate.",
+  "model_version": "5ee8ade794e8f1fc",
+  "classifier_training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+  "repair_enabled": false,
+  "model_file": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+  "answerable_count": 12,
+  "variants": [
+    {
+      "name": "exact_examples",
+      "count": 12,
+      "correct": 0,
+      "execution_accuracy": 0.0,
+      "accuracy_95pct_wilson": [
+        0,
+        0.2425
+      ],
+      "sql_validity_rate": 0.0,
+      "mean_latency_ms": 1.38,
+      "refusals": [
+        {
+          "id": "missing-profit",
+          "refused": true,
+          "reason": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording."
+        },
+        {
+          "id": "forecast",
+          "refused": true,
+          "reason": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording."
+        },
+        {
+          "id": "write",
+          "refused": true,
+          "reason": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording."
+        }
+      ],
+      "predictions": [
+        {
+          "id": "overall",
+          "question": "Give me a single number for revenue earned after refunds across all completed purchases.",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording.",
+          "latency_ms": 1.92
+        },
+        {
+          "id": "months",
+          "question": "List net sales for each calendar month in chronological order.",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording.",
+          "latency_ms": 1.55
+        },
+        {
+          "id": "channels",
+          "question": "Compare net revenue for Web, Mobile, and Partner, highest revenue first.",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording.",
+          "latency_ms": 1.47
+        },
+        {
+          "id": "geography",
+          "question": "Which customer regions brought in the most net revenue? List every region and its revenue in descending order.",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording.",
+          "latency_ms": 1.39
+        },
+        {
+          "id": "top-three",
+          "question": "Name the top 3 customers by net revenue and show each customer's revenue.",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording.",
+          "latency_ms": 1.44
+        },
+        {
+          "id": "january",
+          "question": "How much net revenue did orders placed in January 2025 generate?",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording.",
+          "latency_ms": 1.27
+        },
+        {
+          "id": "web",
+          "question": "Calculate total net revenue from the Web channel only.",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording.",
+          "latency_ms": 1.25
+        },
+        {
+          "id": "mobile-cancelled",
+          "question": "How many Mobile orders have cancelled status?",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording.",
+          "latency_ms": 1.25
+        },
+        {
+          "id": "partner-aov",
+          "question": "What is the average net order value for completed Partner orders?",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording.",
+          "latency_ms": 1.28
+        },
+        {
+          "id": "north-orders",
+          "question": "Count completed orders placed by customers in the North region.",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording.",
+          "latency_ms": 1.25
+        },
+        {
+          "id": "refund-rate",
+          "question": "What percentage of gross completed-order dollars did we refund?",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording.",
+          "latency_ms": 1.25
+        },
+        {
+          "id": "unique-buyers",
+          "question": "How many distinct customers placed at least one completed order?",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "Example mode supports the listed example questions. Choose the local LLM or trained intent model for new wording.",
+          "latency_ms": 1.26
+        }
+      ]
+    },
+    {
+      "name": "trained_intent",
+      "count": 12,
+      "correct": 5,
+      "execution_accuracy": 0.4167,
+      "accuracy_95pct_wilson": [
+        0.1933,
+        0.6805
+      ],
+      "sql_validity_rate": 0.6667,
+      "mean_latency_ms": 34.27,
+      "refusals": [
+        {
+          "id": "missing-profit",
+          "refused": true,
+          "reason": "The intent model abstained: this question is uncertain or outside its nine unfiltered report types. Try the local language model or write SQL."
+        },
+        {
+          "id": "forecast",
+          "refused": true,
+          "reason": "The intent model abstained: this question is uncertain or outside its nine unfiltered report types. Try the local language model or write SQL."
+        },
+        {
+          "id": "write",
+          "refused": true,
+          "reason": "The intent model abstained: this question is uncertain or outside its nine unfiltered report types. Try the local language model or write SQL."
+        }
+      ],
+      "predictions": [
+        {
+          "id": "overall",
+          "question": "Give me a single number for revenue earned after refunds across all completed purchases.",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders",
+          "trace": {
+            "backend": "intent",
+            "model": "TF-IDF + calibrated logistic regression",
+            "intent": "total",
+            "probability": 0.5225,
+            "margin": 0.3527,
+            "accepted": true,
+            "threshold": 0.25,
+            "alternatives": [
+              {
+                "intent": "total",
+                "probability": 0.5225
+              },
+              {
+                "intent": "completed",
+                "probability": 0.1698
+              },
+              {
+                "intent": "aov",
+                "probability": 0.0875
+              }
+            ],
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 7.24,
+            "attempts": [
+              {
+                "sql": "SELECT ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "net_revenue"
+            ],
+            "rows": [
+              [
+                810152.78
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 51.34
+        },
+        {
+          "id": "months",
+          "question": "List net sales for each calendar month in chronological order.",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT DATE_TRUNC('MONTH', order_date) AS month, ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders GROUP BY 1 ORDER BY 1",
+          "trace": {
+            "backend": "intent",
+            "model": "TF-IDF + calibrated logistic regression",
+            "intent": "monthly",
+            "probability": 0.6811,
+            "margin": 0.5967,
+            "accepted": true,
+            "threshold": 0.25,
+            "alternatives": [
+              {
+                "intent": "monthly",
+                "probability": 0.6811
+              },
+              {
+                "intent": "channels",
+                "probability": 0.0844
+              },
+              {
+                "intent": "aov",
+                "probability": 0.0515
+              }
+            ],
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 7.06,
+            "attempts": [
+              {
+                "sql": "SELECT DATE_TRUNC('month', order_date) AS month, ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders GROUP BY 1 ORDER BY 1",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "month",
+              "net_revenue"
+            ],
+            "rows": [
+              [
+                "2025-01-01T00:00:00",
+                40577.31
+              ],
+              [
+                "2025-02-01T00:00:00",
+                47834.52
+              ],
+              [
+                "2025-03-01T00:00:00",
+                54462.49
+              ],
+              [
+                "2025-04-01T00:00:00",
+                52633.35
+              ],
+              [
+                "2025-05-01T00:00:00",
+                58705.85
+              ],
+              [
+                "2025-06-01T00:00:00",
+                62707.01
+              ],
+              [
+                "2025-07-01T00:00:00",
+                65610.33
+              ],
+              [
+                "2025-08-01T00:00:00",
+                78217.47
+              ],
+              [
+                "2025-09-01T00:00:00",
+                77332.43
+              ],
+              [
+                "2025-10-01T00:00:00",
+                86593.77
+              ],
+              [
+                "2025-11-01T00:00:00",
+                89831.42
+              ],
+              [
+                "2025-12-01T00:00:00",
+                95646.83
+              ]
+            ],
+            "row_count": 12,
+            "truncated": false
+          },
+          "latency_ms": 50.17
+        },
+        {
+          "id": "channels",
+          "question": "Compare net revenue for Web, Mobile, and Partner, highest revenue first.",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT channel, ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders GROUP BY channel ORDER BY net_revenue DESC, channel",
+          "trace": {
+            "backend": "intent",
+            "model": "TF-IDF + calibrated logistic regression",
+            "intent": "channels",
+            "probability": 0.4517,
+            "margin": 0.231,
+            "accepted": true,
+            "threshold": 0.25,
+            "alternatives": [
+              {
+                "intent": "channels",
+                "probability": 0.4517
+              },
+              {
+                "intent": "regions",
+                "probability": 0.2207
+              },
+              {
+                "intent": "monthly",
+                "probability": 0.1159
+              }
+            ],
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 6.46,
+            "attempts": [
+              {
+                "sql": "SELECT channel, ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders GROUP BY channel ORDER BY net_revenue DESC, channel",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "channel",
+              "net_revenue"
+            ],
+            "rows": [
+              [
+                "Partner",
+                276454.43
+              ],
+              [
+                "Mobile",
+                269947.55
+              ],
+              [
+                "Web",
+                263750.8
+              ]
+            ],
+            "row_count": 3,
+            "truncated": false
+          },
+          "latency_ms": 49.46
+        },
+        {
+          "id": "geography",
+          "question": "Which customer regions brought in the most net revenue? List every region and its revenue in descending order.",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT c.region, ROUND(SUM(o.net_revenue), 2) AS net_revenue FROM orders AS o JOIN customers AS c ON o.customer_id = c.customer_id GROUP BY c.region ORDER BY net_revenue DESC, c.region",
+          "trace": {
+            "backend": "intent",
+            "model": "TF-IDF + calibrated logistic regression",
+            "intent": "regions",
+            "probability": 0.5867,
+            "margin": 0.4146,
+            "accepted": true,
+            "threshold": 0.25,
+            "alternatives": [
+              {
+                "intent": "regions",
+                "probability": 0.5867
+              },
+              {
+                "intent": "customers",
+                "probability": 0.172
+              },
+              {
+                "intent": "monthly",
+                "probability": 0.0714
+              }
+            ],
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 6.36,
+            "attempts": [
+              {
+                "sql": "SELECT c.region, ROUND(SUM(o.net_revenue), 2) AS net_revenue FROM orders o JOIN customers c ON o.customer_id = c.customer_id GROUP BY c.region ORDER BY net_revenue DESC, c.region",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "region",
+              "net_revenue"
+            ],
+            "rows": [
+              [
+                "West",
+                218549.45
+              ],
+              [
+                "East",
+                201311.94
+              ],
+              [
+                "South",
+                199542.94
+              ],
+              [
+                "North",
+                190748.45
+              ]
+            ],
+            "row_count": 4,
+            "truncated": false
+          },
+          "latency_ms": 50.31
+        },
+        {
+          "id": "top-three",
+          "question": "Name the top 3 customers by net revenue and show each customer's revenue.",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "The intent model abstained: this question is uncertain or outside its nine unfiltered report types. Try the local language model or write SQL.",
+          "latency_ms": 8.24
+        },
+        {
+          "id": "january",
+          "question": "How much net revenue did orders placed in January 2025 generate?",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "The intent model abstained: this question is uncertain or outside its nine unfiltered report types. Try the local language model or write SQL.",
+          "latency_ms": 7.31
+        },
+        {
+          "id": "web",
+          "question": "Calculate total net revenue from the Web channel only.",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "The intent model abstained: this question is uncertain or outside its nine unfiltered report types. Try the local language model or write SQL.",
+          "latency_ms": 7.48
+        },
+        {
+          "id": "mobile-cancelled",
+          "question": "How many Mobile orders have cancelled status?",
+          "correct": false,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT COUNT(*) AS cancelled_orders FROM orders WHERE status = 'cancelled'",
+          "trace": {
+            "backend": "intent",
+            "model": "TF-IDF + calibrated logistic regression",
+            "intent": "cancelled",
+            "probability": 0.6356,
+            "margin": 0.413,
+            "accepted": true,
+            "threshold": 0.25,
+            "alternatives": [
+              {
+                "intent": "cancelled",
+                "probability": 0.6356
+              },
+              {
+                "intent": "completed",
+                "probability": 0.2226
+              },
+              {
+                "intent": "total",
+                "probability": 0.0343
+              }
+            ],
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 6.3,
+            "attempts": [
+              {
+                "sql": "SELECT COUNT(*) AS cancelled_orders FROM orders WHERE status = 'cancelled'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "cancelled_orders"
+            ],
+            "rows": [
+              [
+                174
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 43.47
+        },
+        {
+          "id": "partner-aov",
+          "question": "What is the average net order value for completed Partner orders?",
+          "correct": false,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT ROUND(SUM(net_revenue) / NULLIF(SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END), 0), 2) AS average_order_value FROM orders",
+          "trace": {
+            "backend": "intent",
+            "model": "TF-IDF + calibrated logistic regression",
+            "intent": "aov",
+            "probability": 0.7171,
+            "margin": 0.6223,
+            "accepted": true,
+            "threshold": 0.25,
+            "alternatives": [
+              {
+                "intent": "aov",
+                "probability": 0.7171
+              },
+              {
+                "intent": "completed",
+                "probability": 0.0948
+              },
+              {
+                "intent": "total",
+                "probability": 0.066
+              }
+            ],
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 7.03,
+            "attempts": [
+              {
+                "sql": "SELECT ROUND(SUM(net_revenue) / NULLIF(SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END), 0), 2) AS average_order_value FROM orders",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "average_order_value"
+            ],
+            "rows": [
+              [
+                367.92
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 46.82
+        },
+        {
+          "id": "north-orders",
+          "question": "Count completed orders placed by customers in the North region.",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "The intent model abstained: this question is uncertain or outside its nine unfiltered report types. Try the local language model or write SQL.",
+          "latency_ms": 8.36
+        },
+        {
+          "id": "refund-rate",
+          "question": "What percentage of gross completed-order dollars did we refund?",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT ROUND(100.0 * SUM(refund_amount) / NULLIF(SUM(gross_amount), 0), 2) AS refund_rate_pct FROM orders WHERE status = 'completed'",
+          "trace": {
+            "backend": "intent",
+            "model": "TF-IDF + calibrated logistic regression",
+            "intent": "refunds",
+            "probability": 0.7394,
+            "margin": 0.6437,
+            "accepted": true,
+            "threshold": 0.25,
+            "alternatives": [
+              {
+                "intent": "refunds",
+                "probability": 0.7394
+              },
+              {
+                "intent": "aov",
+                "probability": 0.0957
+              },
+              {
+                "intent": "completed",
+                "probability": 0.0566
+              }
+            ],
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 6.24,
+            "attempts": [
+              {
+                "sql": "SELECT ROUND(100.0 * SUM(refund_amount) / NULLIF(SUM(gross_amount), 0), 2) AS refund_rate_pct FROM orders WHERE status = 'completed'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "refund_rate_pct"
+            ],
+            "rows": [
+              [
+                7.31
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 43.86
+        },
+        {
+          "id": "unique-buyers",
+          "question": "How many distinct customers placed at least one completed order?",
+          "correct": false,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT COUNT(*) AS completed_orders FROM orders WHERE status = 'completed'",
+          "trace": {
+            "backend": "intent",
+            "model": "TF-IDF + calibrated logistic regression",
+            "intent": "completed",
+            "probability": 0.4947,
+            "margin": 0.2649,
+            "accepted": true,
+            "threshold": 0.25,
+            "alternatives": [
+              {
+                "intent": "completed",
+                "probability": 0.4947
+              },
+              {
+                "intent": "aov",
+                "probability": 0.2298
+              },
+              {
+                "intent": "cancelled",
+                "probability": 0.1109
+              }
+            ],
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 6.27,
+            "attempts": [
+              {
+                "sql": "SELECT COUNT(*) AS completed_orders FROM orders WHERE status = 'completed'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "completed_orders"
+            ],
+            "rows": [
+              [
+                2202
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 44.43
+        }
+      ]
+    },
+    {
+      "name": "local_no_retrieval",
+      "count": 12,
+      "correct": 5,
+      "execution_accuracy": 0.4167,
+      "accuracy_95pct_wilson": [
+        0.1933,
+        0.6805
+      ],
+      "sql_validity_rate": 0.9167,
+      "mean_latency_ms": 9024.86,
+      "refusals": [
+        {
+          "id": "missing-profit",
+          "refused": false,
+          "sql": "SELECT SUM(net_revenue) - SUM(gross_amount) AS profit FROM orders"
+        },
+        {
+          "id": "forecast",
+          "refused": false,
+          "sql": "SELECT SUM(net_revenue) AS predicted_revenue FROM orders WHERE order_date >= '2027-01-01' AND order_date < '2028-01-01'"
+        },
+        {
+          "id": "write",
+          "refused": true,
+          "reason": "The task is to delete all cancelled orders from the database. However, the provided SQL query is empty, which means it does not contain any SQL commands to delete cancelled orders. To delete cancelled orders, you would need to specify the condition for cancelled orders, such as `status = 'cancelled'`, and then use the `DELETE` statement. For example, the SQL query would be: `DELETE FROM orders WHERE status = 'cancelled'`. Please provide the SQL query to delete cancelled orders."
+        }
+      ],
+      "predictions": [
+        {
+          "id": "overall",
+          "question": "Give me a single number for revenue earned after refunds across all completed purchases.",
+          "correct": false,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT SUM(net_revenue) FROM orders WHERE status = 'completed' AND refund_amount = 0",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": false,
+            "generation_ms": 8126.17,
+            "total_ms": 9021.75,
+            "usage": {
+              "prompt_tokens": 304,
+              "completion_tokens": 67,
+              "total_tokens": 371
+            },
+            "repaired": false,
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 9096.65,
+            "attempts": [
+              {
+                "sql": "SELECT SUM(net_revenue) FROM orders WHERE status = 'completed' AND refund_amount = 0",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "sum(net_revenue)"
+            ],
+            "rows": [
+              [
+                762149.170000001
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 9153.86
+        },
+        {
+          "id": "months",
+          "question": "List net sales for each calendar month in chronological order.",
+          "correct": false,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT STRFTIME('%Y-%m', order_date) AS month, SUM(net_revenue) AS net_sales FROM orders WHERE status = 'approved' GROUP BY month ORDER BY month",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": false,
+            "generation_ms": 10245.39,
+            "total_ms": 10245.37,
+            "usage": {
+              "prompt_tokens": 300,
+              "completion_tokens": 109,
+              "total_tokens": 409
+            },
+            "repaired": false,
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 10245.71,
+            "attempts": [
+              {
+                "sql": "SELECT strftime('%Y-%m', order_date) AS month, SUM(net_revenue) AS net_sales FROM orders WHERE status = 'approved' GROUP BY month ORDER BY month",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "month",
+              "net_sales"
+            ],
+            "rows": [],
+            "row_count": 0,
+            "truncated": false
+          },
+          "latency_ms": 10300.6
+        },
+        {
+          "id": "channels",
+          "question": "Compare net revenue for Web, Mobile, and Partner, highest revenue first.",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT channel, SUM(net_revenue) AS total_revenue FROM orders WHERE channel IN ('Web', 'Mobile', 'Partner') GROUP BY channel ORDER BY total_revenue DESC LIMIT 3",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": false,
+            "generation_ms": 10935.97,
+            "total_ms": 10935.94,
+            "usage": {
+              "prompt_tokens": 304,
+              "completion_tokens": 117,
+              "total_tokens": 421
+            },
+            "repaired": false,
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 10936.27,
+            "attempts": [
+              {
+                "sql": "SELECT channel, SUM(net_revenue) AS total_revenue FROM orders WHERE channel IN ('Web', 'Mobile', 'Partner') GROUP BY channel ORDER BY total_revenue DESC LIMIT 3",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "channel",
+              "total_revenue"
+            ],
+            "rows": [
+              [
+                "Partner",
+                276454.4299999997
+              ],
+              [
+                "Mobile",
+                269947.54999999993
+              ],
+              [
+                "Web",
+                263750.80000000016
+              ]
+            ],
+            "row_count": 3,
+            "truncated": false
+          },
+          "latency_ms": 10997.01
+        },
+        {
+          "id": "geography",
+          "question": "Which customer regions brought in the most net revenue? List every region and its revenue in descending order.",
+          "correct": false,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT customers.region, SUM(orders.net_revenue) AS revenue FROM orders JOIN customers ON orders.customer_id = customers.customer_id WHERE orders.status = 'approved' GROUP BY customers.region ORDER BY revenue DESC LIMIT 10",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": false,
+            "generation_ms": 11390.17,
+            "total_ms": 11390.15,
+            "usage": {
+              "prompt_tokens": 309,
+              "completion_tokens": 127,
+              "total_tokens": 436
+            },
+            "repaired": false,
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 11390.43,
+            "attempts": [
+              {
+                "sql": "SELECT customers.region, SUM(orders.net_revenue) AS revenue FROM orders JOIN customers ON orders.customer_id = customers.customer_id WHERE orders.status = 'approved' GROUP BY customers.region ORDER BY revenue DESC LIMIT 10",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "region",
+              "revenue"
+            ],
+            "rows": [],
+            "row_count": 0,
+            "truncated": false
+          },
+          "latency_ms": 11442.41
+        },
+        {
+          "id": "top-three",
+          "question": "Name the top 3 customers by net revenue and show each customer's revenue.",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT customers.customer_name, SUM(orders.net_revenue) AS revenue FROM orders JOIN customers ON orders.customer_id = customers.customer_id GROUP BY customers.customer_name ORDER BY revenue DESC LIMIT 3",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": false,
+            "generation_ms": 9497.63,
+            "total_ms": 9497.61,
+            "usage": {
+              "prompt_tokens": 305,
+              "completion_tokens": 98,
+              "total_tokens": 403
+            },
+            "repaired": false,
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 9498.04,
+            "attempts": [
+              {
+                "sql": "SELECT customers.customer_name, SUM(orders.net_revenue) AS revenue FROM orders JOIN customers ON orders.customer_id = customers.customer_id GROUP BY customers.customer_name ORDER BY revenue DESC LIMIT 3",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "customer_name",
+              "revenue"
+            ],
+            "rows": [
+              [
+                "Harper Patel",
+                22772.18999999999
+              ],
+              [
+                "Riley Patel",
+                21791.3
+              ],
+              [
+                "Harper Brooks",
+                21623.18
+              ]
+            ],
+            "row_count": 3,
+            "truncated": false
+          },
+          "latency_ms": 9554.78
+        },
+        {
+          "id": "january",
+          "question": "How much net revenue did orders placed in January 2025 generate?",
+          "correct": false,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT SUM(net_revenue) FROM orders WHERE order_date BETWEEN '2025-01-01' AND '2025-01-31' AND status = 'approved' AND channel = 'online'",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": false,
+            "generation_ms": 11207.78,
+            "total_ms": 11207.75,
+            "usage": {
+              "prompt_tokens": 305,
+              "completion_tokens": 111,
+              "total_tokens": 416
+            },
+            "repaired": false,
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 11208.07,
+            "attempts": [
+              {
+                "sql": "SELECT SUM(net_revenue) FROM orders WHERE order_date BETWEEN '2025-01-01' AND '2025-01-31' AND status = 'approved' AND channel = 'online'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "sum(net_revenue)"
+            ],
+            "rows": [
+              [
+                null
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 11258.62
+        },
+        {
+          "id": "web",
+          "question": "Calculate total net revenue from the Web channel only.",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT SUM(net_revenue) FROM orders WHERE channel = 'Web'",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": false,
+            "generation_ms": 6262.36,
+            "total_ms": 6262.33,
+            "usage": {
+              "prompt_tokens": 299,
+              "completion_tokens": 64,
+              "total_tokens": 363
+            },
+            "repaired": false,
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 6262.64,
+            "attempts": [
+              {
+                "sql": "SELECT SUM(net_revenue) FROM orders WHERE channel = 'Web'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "sum(net_revenue)"
+            ],
+            "rows": [
+              [
+                263750.80000000016
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 6313.18
+        },
+        {
+          "id": "mobile-cancelled",
+          "question": "How many Mobile orders have cancelled status?",
+          "correct": false,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT COUNT(order_id) FROM orders WHERE status = 'Cancelled' AND channel = 'Mobile'",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": false,
+            "generation_ms": 7023.64,
+            "total_ms": 7023.62,
+            "usage": {
+              "prompt_tokens": 297,
+              "completion_tokens": 73,
+              "total_tokens": 370
+            },
+            "repaired": false,
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 7023.95,
+            "attempts": [
+              {
+                "sql": "SELECT COUNT(order_id) FROM orders WHERE status = 'Cancelled' AND channel = 'Mobile'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "count(order_id)"
+            ],
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 7073.76
+        },
+        {
+          "id": "partner-aov",
+          "question": "What is the average net order value for completed Partner orders?",
+          "correct": false,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT AVG(net_revenue) FROM orders WHERE channel = 'Partner' AND status = 'Completed'",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": false,
+            "generation_ms": 7102.73,
+            "total_ms": 7102.71,
+            "usage": {
+              "prompt_tokens": 301,
+              "completion_tokens": 72,
+              "total_tokens": 373
+            },
+            "repaired": false,
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 7103.13,
+            "attempts": [
+              {
+                "sql": "SELECT AVG(net_revenue) FROM orders WHERE channel = 'Partner' AND status = 'Completed'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "avg(net_revenue)"
+            ],
+            "rows": [
+              [
+                null
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 7153.04
+        },
+        {
+          "id": "north-orders",
+          "question": "Count completed orders placed by customers in the North region.",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "Query planning failed: Binder Error: Referenced column \"region\" not found in FROM clause!\nCandidate bindings: \"order_id\", \"gross_amount\", \"refund_amount\"\n\nLINE 32:   channel = 'Online' AND status = 'Completed' AND region = 'North'\n                                                           ^",
+          "latency_ms": 7611.25
+        },
+        {
+          "id": "refund-rate",
+          "question": "What percentage of gross completed-order dollars did we refund?",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT CAST(SUM(refund_amount) AS DOUBLE) * 100 / SUM(gross_amount) FROM orders WHERE status = 'completed'",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": false,
+            "generation_ms": 8058.63,
+            "total_ms": 8058.61,
+            "usage": {
+              "prompt_tokens": 300,
+              "completion_tokens": 84,
+              "total_tokens": 384
+            },
+            "repaired": false,
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 8058.91,
+            "attempts": [
+              {
+                "sql": "SELECT CAST(SUM(refund_amount) AS DOUBLE) * 100 / SUM(gross_amount) FROM orders WHERE status = 'completed'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "((CAST(sum(refund_amount) AS \"DOUBLE\") * 100) / sum(gross_amount))"
+            ],
+            "rows": [
+              [
+                7.31382745043482
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 8110.12
+        },
+        {
+          "id": "unique-buyers",
+          "question": "How many distinct customers placed at least one completed order?",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT COUNT(DISTINCT T1.customer_id) FROM orders AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T1.status = 'completed'",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": false,
+            "generation_ms": 9271.05,
+            "total_ms": 9271.03,
+            "usage": {
+              "prompt_tokens": 300,
+              "completion_tokens": 99,
+              "total_tokens": 399
+            },
+            "repaired": false,
+            "retrieved_documents": 0,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 9271.48,
+            "attempts": [
+              {
+                "sql": "SELECT COUNT(DISTINCT T1.customer_id) FROM orders AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T1.status = 'completed'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "count(DISTINCT T1.customer_id)"
+            ],
+            "rows": [
+              [
+                48
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 9329.7
+        }
+      ]
+    },
+    {
+      "name": "local_retrieval",
+      "count": 12,
+      "correct": 10,
+      "execution_accuracy": 0.8333,
+      "accuracy_95pct_wilson": [
+        0.552,
+        0.953
+      ],
+      "sql_validity_rate": 0.9167,
+      "mean_latency_ms": 15009.86,
+      "refusals": [
+        {
+          "id": "missing-profit",
+          "refused": true,
+          "reason": "Query planning failed: Binder Error: Referenced column \"shipping_costs\" not found in FROM clause!\nCandidate bindings: \"refund_amount\", \"gross_amount\"\n\nLINE 29:   ROUND(SUM(net_revenue) - SUM(shipping_costs) - SUM(taxes), 2) AS profit_after_shipping_c...\n                                        ^"
+        },
+        {
+          "id": "forecast",
+          "refused": true,
+          "reason": "The task requires predicting the total net revenue for the year 2027. However, the provided schema and training examples do not contain any information about the revenue data for 2027. Therefore, it is not possible to provide a specific prediction for the total net revenue in 2027 based on the given data."
+        },
+        {
+          "id": "write",
+          "refused": true,
+          "reason": "The task is to delete all cancelled orders from the database. Since the question does not specify any conditions or filters, the SQL query is empty. The explanation is that the task is to remove data from the database, which requires a specific SQL command to delete records. Without any conditions or filters, the query is empty because there is no data to delete."
+        }
+      ],
+      "predictions": [
+        {
+          "id": "overall",
+          "question": "Give me a single number for revenue earned after refunds across all completed purchases.",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders WHERE status = 'completed'",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": true,
+            "generation_ms": 11632.24,
+            "total_ms": 11632.23,
+            "usage": {
+              "prompt_tokens": 956,
+              "completion_tokens": 74,
+              "total_tokens": 1030
+            },
+            "repaired": false,
+            "retrieved_documents": 8,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 11632.52,
+            "attempts": [
+              {
+                "sql": "SELECT ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders WHERE status = 'completed'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "net_revenue"
+            ],
+            "rows": [
+              [
+                810152.78
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 11690.47
+        },
+        {
+          "id": "months",
+          "question": "List net sales for each calendar month in chronological order.",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT DATE_TRUNC('MONTH', order_date) AS month, ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders GROUP BY 1 ORDER BY 1",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": true,
+            "generation_ms": 15416.74,
+            "total_ms": 15416.72,
+            "usage": {
+              "prompt_tokens": 978,
+              "completion_tokens": 107,
+              "total_tokens": 1085
+            },
+            "repaired": false,
+            "retrieved_documents": 8,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 15417.12,
+            "attempts": [
+              {
+                "sql": "SELECT DATE_TRUNC('month', order_date) AS month, ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders GROUP BY 1 ORDER BY 1",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "month",
+              "net_revenue"
+            ],
+            "rows": [
+              [
+                "2025-01-01T00:00:00",
+                40577.31
+              ],
+              [
+                "2025-02-01T00:00:00",
+                47834.52
+              ],
+              [
+                "2025-03-01T00:00:00",
+                54462.49
+              ],
+              [
+                "2025-04-01T00:00:00",
+                52633.35
+              ],
+              [
+                "2025-05-01T00:00:00",
+                58705.85
+              ],
+              [
+                "2025-06-01T00:00:00",
+                62707.01
+              ],
+              [
+                "2025-07-01T00:00:00",
+                65610.33
+              ],
+              [
+                "2025-08-01T00:00:00",
+                78217.47
+              ],
+              [
+                "2025-09-01T00:00:00",
+                77332.43
+              ],
+              [
+                "2025-10-01T00:00:00",
+                86593.77
+              ],
+              [
+                "2025-11-01T00:00:00",
+                89831.42
+              ],
+              [
+                "2025-12-01T00:00:00",
+                95646.83
+              ]
+            ],
+            "row_count": 12,
+            "truncated": false
+          },
+          "latency_ms": 15484.1
+        },
+        {
+          "id": "channels",
+          "question": "Compare net revenue for Web, Mobile, and Partner, highest revenue first.",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT channel, ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders WHERE channel IN ('Web', 'Mobile', 'Partner') GROUP BY channel ORDER BY net_revenue DESC",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": true,
+            "generation_ms": 17990.45,
+            "total_ms": 17990.43,
+            "usage": {
+              "prompt_tokens": 957,
+              "completion_tokens": 120,
+              "total_tokens": 1077
+            },
+            "repaired": false,
+            "retrieved_documents": 8,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 17990.76,
+            "attempts": [
+              {
+                "sql": "SELECT channel, ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders WHERE channel IN ('Web', 'Mobile', 'Partner') GROUP BY channel ORDER BY net_revenue DESC",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "channel",
+              "net_revenue"
+            ],
+            "rows": [
+              [
+                "Partner",
+                276454.43
+              ],
+              [
+                "Mobile",
+                269947.55
+              ],
+              [
+                "Web",
+                263750.8
+              ]
+            ],
+            "row_count": 3,
+            "truncated": false
+          },
+          "latency_ms": 18037.37
+        },
+        {
+          "id": "geography",
+          "question": "Which customer regions brought in the most net revenue? List every region and its revenue in descending order.",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT c.region, ROUND(SUM(o.net_revenue), 2) AS net_revenue FROM orders AS o JOIN customers AS c ON o.customer_id = c.customer_id GROUP BY c.region ORDER BY net_revenue DESC, c.region",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": true,
+            "generation_ms": 15237.61,
+            "total_ms": 15237.59,
+            "usage": {
+              "prompt_tokens": 1003,
+              "completion_tokens": 106,
+              "total_tokens": 1109
+            },
+            "repaired": false,
+            "retrieved_documents": 8,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 15237.91,
+            "attempts": [
+              {
+                "sql": "SELECT c.region, ROUND(SUM(o.net_revenue), 2) AS net_revenue FROM orders o JOIN customers c ON o.customer_id = c.customer_id GROUP BY c.region ORDER BY net_revenue DESC, c.region",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "region",
+              "net_revenue"
+            ],
+            "rows": [
+              [
+                "West",
+                218549.45
+              ],
+              [
+                "East",
+                201311.94
+              ],
+              [
+                "South",
+                199542.94
+              ],
+              [
+                "North",
+                190748.45
+              ]
+            ],
+            "row_count": 4,
+            "truncated": false
+          },
+          "latency_ms": 15321.59
+        },
+        {
+          "id": "top-three",
+          "question": "Name the top 3 customers by net revenue and show each customer's revenue.",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT c.customer_name, ROUND(SUM(o.net_revenue), 2) AS net_revenue FROM orders AS o JOIN customers AS c ON o.customer_id = c.customer_id GROUP BY c.customer_id, c.customer_name ORDER BY net_revenue DESC, c.customer_name LIMIT 3",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": true,
+            "generation_ms": 21789.62,
+            "total_ms": 21789.6,
+            "usage": {
+              "prompt_tokens": 988,
+              "completion_tokens": 167,
+              "total_tokens": 1155
+            },
+            "repaired": false,
+            "retrieved_documents": 8,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 21789.91,
+            "attempts": [
+              {
+                "sql": "SELECT c.customer_name, ROUND(SUM(o.net_revenue), 2) AS net_revenue FROM orders o JOIN customers c ON o.customer_id = c.customer_id GROUP BY c.customer_id, c.customer_name ORDER BY net_revenue DESC, c.customer_name LIMIT 3",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "customer_name",
+              "net_revenue"
+            ],
+            "rows": [
+              [
+                "Harper Patel",
+                22772.19
+              ],
+              [
+                "Riley Patel",
+                21791.3
+              ],
+              [
+                "Harper Brooks",
+                21623.18
+              ]
+            ],
+            "row_count": 3,
+            "truncated": false
+          },
+          "latency_ms": 21845.25
+        },
+        {
+          "id": "january",
+          "question": "How much net revenue did orders placed in January 2025 generate?",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders WHERE DATE_TRUNC('MONTH', order_date) = '2025-01-01' AND status = 'completed'",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": true,
+            "generation_ms": 18605.14,
+            "total_ms": 18605.13,
+            "usage": {
+              "prompt_tokens": 998,
+              "completion_tokens": 156,
+              "total_tokens": 1154
+            },
+            "repaired": false,
+            "retrieved_documents": 8,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 18605.44,
+            "attempts": [
+              {
+                "sql": "SELECT ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders WHERE DATE_TRUNC('month', order_date) = '2025-01-01' AND status = 'completed'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "net_revenue"
+            ],
+            "rows": [
+              [
+                40577.31
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 18662.11
+        },
+        {
+          "id": "web",
+          "question": "Calculate total net revenue from the Web channel only.",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT ROUND(SUM(net_revenue), 2) AS net_revenue FROM orders WHERE channel = 'Web' AND status = 'completed'",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": true,
+            "generation_ms": 14485.99,
+            "total_ms": 14485.97,
+            "usage": {
+              "prompt_tokens": 967,
+              "completion_tokens": 104,
+              "total_tokens": 1071
+            },
+            "repaired": false,
+            "retrieved_documents": 8,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 14486.21,
+            "attempts": [
+              {
+                "sql": "SELECT ROUND(SUM(net_revenue) , 2) AS net_revenue FROM orders WHERE channel = 'Web' AND status = 'completed'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "net_revenue"
+            ],
+            "rows": [
+              [
+                263750.8
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 14545.02
+        },
+        {
+          "id": "mobile-cancelled",
+          "question": "How many Mobile orders have cancelled status?",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT COUNT(*) AS cancelled_orders FROM orders WHERE status = 'cancelled' AND channel = 'Mobile'",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": true,
+            "generation_ms": 10616.96,
+            "total_ms": 10616.92,
+            "usage": {
+              "prompt_tokens": 924,
+              "completion_tokens": 70,
+              "total_tokens": 994
+            },
+            "repaired": false,
+            "retrieved_documents": 8,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 10617.19,
+            "attempts": [
+              {
+                "sql": "SELECT COUNT(*) AS cancelled_orders FROM orders WHERE status = 'cancelled' AND channel = 'Mobile'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "cancelled_orders"
+            ],
+            "rows": [
+              [
+                66
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 10677.73
+        },
+        {
+          "id": "partner-aov",
+          "question": "What is the average net order value for completed Partner orders?",
+          "correct": false,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT ROUND(SUM(net_revenue) / NULLIF(SUM(CASE WHEN channel = 'Partner' AND status = 'completed' THEN 1 ELSE 0 END), 0), 2) AS average_net_order_value FROM orders",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": true,
+            "generation_ms": 17641.08,
+            "total_ms": 17641.07,
+            "usage": {
+              "prompt_tokens": 968,
+              "completion_tokens": 133,
+              "total_tokens": 1101
+            },
+            "repaired": false,
+            "retrieved_documents": 8,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 17641.4,
+            "attempts": [
+              {
+                "sql": "SELECT ROUND(SUM(net_revenue) / NULLIF(SUM(CASE WHEN channel = 'Partner' AND status = 'completed' THEN 1 ELSE 0 END), 0), 2) AS average_net_order_value FROM orders",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "average_net_order_value"
+            ],
+            "rows": [
+              [
+                1070.22
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 17696.34
+        },
+        {
+          "id": "north-orders",
+          "question": "Count completed orders placed by customers in the North region.",
+          "correct": false,
+          "valid_sql": false,
+          "executed": false,
+          "error": "Query planning failed: Binder Error: Referenced table \"customers\" not found!\nCandidate tables: \"orders\"\n\nLINE 32:   status = 'completed' AND customers.region = 'North'\n                                    ^",
+          "latency_ms": 13303.95
+        },
+        {
+          "id": "refund-rate",
+          "question": "What percentage of gross completed-order dollars did we refund?",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT ROUND(100.0 * SUM(refund_amount) / NULLIF(SUM(gross_amount), 0), 2) AS refund_rate_pct FROM orders WHERE status = 'completed'",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": true,
+            "generation_ms": 12004.95,
+            "total_ms": 12004.94,
+            "usage": {
+              "prompt_tokens": 979,
+              "completion_tokens": 87,
+              "total_tokens": 1066
+            },
+            "repaired": false,
+            "retrieved_documents": 8,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 12005.47,
+            "attempts": [
+              {
+                "sql": "SELECT ROUND(100.0 * SUM(refund_amount) / NULLIF(SUM(gross_amount), 0), 2) AS refund_rate_pct FROM orders WHERE status = 'completed'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "refund_rate_pct"
+            ],
+            "rows": [
+              [
+                7.31
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 12062.54
+        },
+        {
+          "id": "unique-buyers",
+          "question": "How many distinct customers placed at least one completed order?",
+          "correct": true,
+          "valid_sql": true,
+          "executed": true,
+          "sql": "SELECT COUNT(DISTINCT customer_id) FROM orders WHERE status = 'completed'",
+          "trace": {
+            "backend": "local",
+            "model": "qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+            "retrieval": true,
+            "generation_ms": 10740.25,
+            "total_ms": 10740.23,
+            "usage": {
+              "prompt_tokens": 970,
+              "completion_tokens": 76,
+              "total_tokens": 1046
+            },
+            "repaired": false,
+            "retrieved_documents": 8,
+            "training_hash": "d59d2d63bbf8056c6bcbf26736643b2a8b719ceeb3537ef85c5b45cfb313d882",
+            "latency_ms": 10740.57,
+            "attempts": [
+              {
+                "sql": "SELECT COUNT(DISTINCT customer_id) FROM orders WHERE status = 'completed'",
+                "valid": true
+              }
+            ]
+          },
+          "result": {
+            "columns": [
+              "count(DISTINCT customer_id)"
+            ],
+            "rows": [
+              [
+                48
+              ]
+            ],
+            "row_count": 1,
+            "truncated": false
+          },
+          "latency_ms": 10791.8
+        }
+      ]
+    }
+  ]
+}

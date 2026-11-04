@@ -1,0 +1,52 @@
+{
+  "provenance": "Curated synthetic English commerce questions authored for QueryLens. Splits were fixed before fitting. Not real user traffic or an external benchmark.",
+  "intents": {
+    "total": {
+      "train": ["What is the total net revenue?", "Show overall revenue after refunds", "How much money did we earn in total?", "Give me the sum of net sales", "Report total realized sales", "Calculate all revenue from completed orders", "What are our aggregate earnings?", "Show the grand total of sales revenue", "How much revenue did the business generate?", "Add up revenue across all orders", "Find total sales after returns", "What is our full year net revenue?"],
+      "dev": ["Tell me the overall net revenue figure", "What did we earn across the whole business?", "Calculate aggregate net sales for the year"],
+      "test": ["How much revenue is left after returns across all sales?", "I need one figure for the business's total earnings", "Add together the net sales for the entire reporting period", "What is the full-year revenue total excluding cancelled purchases?"]
+    },
+    "monthly": {
+      "train": ["Show monthly net revenue", "Break sales down by month", "How has revenue changed month to month?", "Plot a monthly revenue trend", "Give me net sales for each calendar month", "Show revenue over the year month by month", "List monthly business earnings", "Summarize revenue grouped by month", "What was net revenue in every month?", "Monthly sales performance across the year", "Show a time series of monthly sales", "Compare revenue between months"],
+      "dev": ["Give a month-by-month revenue report", "Show the revenue trajectory across calendar months", "What are our net earnings each month?"],
+      "test": ["How did net sales evolve throughout the year on a monthly basis?", "Arrange the year's revenue figures into calendar-month buckets", "I want to see the monthwise sales trajectory", "List the revenue timeline with one point for each month"]
+    },
+    "channels": {
+      "train": ["Which sales channels generate the most revenue?", "Show revenue by channel", "Compare Web Mobile and Partner sales", "Break net sales down by acquisition channel", "Where does sales revenue come from by channel?", "Rank channels by net earnings", "Give channel level revenue totals", "How much money comes through each sales channel?", "Compare channel performance using revenue", "Group revenue by the channel field", "Show the contribution of each selling channel", "Net sales distribution across channels"],
+      "dev": ["Which channels bring in the most sales?", "Compare revenue contributions from our channels", "Give the Web versus Mobile versus Partner revenue breakdown"],
+      "test": ["How is our net turnover distributed among selling channels?", "Rank the sales routes by how much money they generated", "Compare the revenue contributions of web, mobile, and partners", "Which channel accounts for the highest net sales?"]
+    },
+    "regions": {
+      "train": ["Compare revenue across regions", "Show sales by customer region", "How much net revenue comes from each region?", "Rank North South East West by revenue", "Give a geographical sales breakdown", "Group net earnings by the customer's region", "Which regions generate the most sales?", "Regional revenue performance report", "Compare the sales contribution of customer locations", "Where do customers generating revenue live by region?", "Sum sales revenue separately for every region", "Report net revenue grouped geographically"],
+      "dev": ["Show our regional net sales totals", "Which geographical region earns the most revenue?", "Compare North, South, East, and West sales revenue"],
+      "test": ["How do net earnings differ between customer regions?", "Give a geographic split of the money customers brought in", "Rank customer regions according to their contribution to sales", "Summarize turnover for each of the four regions"]
+    },
+    "customers": {
+      "train": ["Who are our top 5 customers?", "Show the five customers with the most revenue", "Rank the top five buyers by net sales", "Which five customers spend the most?", "List our five best customers by revenue", "Give the leading five customers in net revenue", "Find the top five customers and their revenue", "Customer revenue leaderboard top five", "Who contributed the most net sales among customers top 5?", "Show five highest value customers", "Rank buyers by sales and show the first five", "Which customers are our five biggest revenue contributors?"],
+      "dev": ["List the top five revenue generating customers", "Who are the five largest buyers by sales?", "Show a revenue leaderboard of five customers"],
+      "test": ["Identify the five purchasers who contribute the most net revenue", "Which five customer accounts are worth the most in sales?", "List our five leading buyers with their net spending", "Show the first five names in the customer sales ranking"]
+    },
+    "aov": {
+      "train": ["What is our average order value?", "Show AOV", "How much is a typical completed order worth on average?", "Calculate mean net revenue per completed order", "Average net amount per successful purchase", "Give me the average size of a completed sale", "What do customers spend per completed order on average?", "Report the average order amount after refunds", "Compute net sales divided by completed order count", "Mean value of successful orders", "What is the average sales ticket?", "Show average revenue per completed purchase"],
+      "dev": ["Calculate our average completed-order sales value", "How much net sales does an order generate on average?", "Give mean purchase value excluding cancellations"],
+      "test": ["On average, how much net money is earned per completed purchase?", "What is the mean ticket size once refunds are accounted for?", "Divide net turnover by the number of successful orders", "Report AOV using only completed purchases"]
+    },
+    "refunds": {
+      "train": ["What percentage of revenue was refunded?", "Show refund rate", "Calculate refunded dollars as a percentage of gross sales", "What share of completed sales was returned as refunds?", "Report the dollar based refund percentage", "How much of gross revenue went back to customers?", "Show refund amount divided by gross sales times 100", "Percentage of completed order value refunded", "What proportion of sales money was refunded?", "Calculate the sales refund ratio as a percent", "What fraction of gross dollars did we refund?", "Give the monetary refund rate"],
+      "dev": ["What percent of completed-order gross sales was refunded?", "Measure refunds as a share of revenue before returns", "How large is the refunded dollar percentage?"],
+      "test": ["Of all gross sales dollars from completed orders, what percentage was paid back?", "Express returned money as a proportion of gross completed sales", "What is the refund ratio in percentage terms by dollar amount?", "Calculate the share of revenue lost to customer refunds"]
+    },
+    "completed": {
+      "train": ["How many orders were completed?", "Count successful purchases", "Show the completed order count", "How many sales have completed status?", "Number of successfully completed orders", "Give me the total count of finished purchases", "Count orders that were not cancelled", "How many orders actually went through?", "Report the volume of completed sales", "How many successful order records are there?", "What is the count of completed transactions?", "Total number of fulfilled purchases with completed status"],
+      "dev": ["Tell me how many purchases successfully completed", "Count all sales marked completed", "What is our successful transaction count?"],
+      "test": ["How many purchases made it through to completion?", "Give the number of order records whose status indicates success", "Count the transactions that finished successfully", "What was our volume of completed purchases?"]
+    },
+    "cancelled": {
+      "train": ["How many orders were cancelled?", "Count canceled purchases", "Show cancellation count", "Number of orders with cancelled status", "How many sales were called off?", "Total count of cancelled transactions", "How many orders failed to complete because they were cancelled?", "Report cancelled order volume", "Count purchases marked canceled", "How many abandoned orders have cancelled status?", "Give the number of cancelled sales", "What is the total number of order cancellations?"],
+      "dev": ["How many purchase cancellations were recorded?", "Report the number of canceled order records", "Count sales that ended with cancelled status"],
+      "test": ["What was the volume of purchases that got called off?", "Tell me how many orders ended in cancellation", "Count all the transactions recorded as cancelled", "How many customer purchases were canceled rather than completed?"]
+    }
+  },
+  "dev_ood": ["What will revenue be next year?", "Delete all orders", "What is the weather?", "Show profit after tax", "Revenue in March only", "Top 3 customers", "Show each customer's email", "Compare revenue with our competitors"],
+  "test_ood": ["Forecast sales for 2027", "Erase the customer database", "How many units of each product are in stock?", "What is our net profit margin?", "Find revenue for the first quarter", "Rank the top 10 customers", "Which country has the lowest tax rate?", "Give me employee salaries", "Summarize the latest news", "What is the median delivery time?", "Show revenue for Web customers only", "How much did the business earn in 2024?"]
+}
