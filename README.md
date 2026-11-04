@@ -7,6 +7,12 @@ QueryLens combines a declarative business-model registry, a scope-aware SQL
 compiler, trained NLP routing, local language-model generation, and a complete
 browser workflow. Inference runs on your computer without a hosted API.
 
+**[Try the live demo](https://querylens-deviantecho.onrender.com)**
+
+The hosted demo includes the trained intent classifier, SQL workbench, CSV
+exports, and AI Lab. Qwen generation runs in the local version. The first visit
+after inactivity may take about a minute to start.
+
 ## Quick start
 
 Requires Python 3.11 or later.
