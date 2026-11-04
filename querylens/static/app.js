@@ -1,6 +1,6 @@
 'use strict';
 const $ = (id) => document.getElementById(id);
-const state = {token: null, plan: null, result: null, busy: false};
+const state = {token: null, plan: null, result: null, busy: false, publicDemo: false};
 const money = (n) => new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 0}).format(n);
 const node = (tag, text, cls) => { const n = document.createElement(tag); if (text !== undefined) n.textContent = text; if (cls) n.className = cls; return n; };
 
@@ -103,13 +103,14 @@ $('export').addEventListener('click',()=>{
 function updateMode(){
   const labels={local:'Local language model',intent:'Trained ML model',examples:'Example mode',ollama:'Local Ollama model'};
   const notes={local:'Qwen runs on this computer and generates new SQL using your schema. Drafts can take 10–30 seconds on CPU. Inspect every draft before running it.',intent:'A calibrated classifier recognizes nine unfiltered report types and selects approved SQL templates. It abstains on uncertain questions; use the language model for filters.',examples:'A fixed library of nine example questions. No model inference in this mode.',ollama:'A separately installed Ollama model generates SQL locally.'};
+  if(state.publicDemo)notes.intent='The live trained classifier recognizes nine unfiltered report types and selects approved SQL. Try rephrasing the examples. For filters, use the SQL editor or run Qwen in the local version.';
   $('mode').textContent=labels[$('backend').value];$('mode-note').textContent=notes[$('backend').value];
 }
 async function aiStatus(){
   $('ai-status').textContent='Loading local AI results...';
   try{
     const data=await api('/api/ai/status'),ml=data.intent_model,e=ml.evaluation,pct=n=>`${(n*100).toFixed(1)}%`;
-    $('ai-status').textContent=`Default inference: ${data.default_backend}. ${data.local_model_ready?'Local model weights and runtime available.':'Local model not ready; the trained classifier is available.'}`;
+    $('ai-status').textContent=data.public_demo?'Live inference: trained intent classifier. Generation scores below are saved CPU-local Qwen experiments; Qwen does not run on this free web instance.':`Default inference: ${data.default_backend}. ${data.local_model_ready?'Local model weights and runtime available.':'Local model not ready; the trained classifier is available.'}`;
     $('ml-accuracy').textContent=pct(e.accuracy);$('ml-f1').textContent=e.macro_f1.toFixed(3);$('ml-coverage').textContent=pct(e.coverage);$('ml-ood').textContent=pct(e.ood_rejection_rate);
     $('ml-split').textContent=`${ml.training_count} train / ${ml.dev_count} dev / ${ml.test_count} test questions`;
     $('ml-selective').textContent=`Accepted accuracy: ${e.selective_accuracy===null?'N/A':pct(e.selective_accuracy)}`;
@@ -127,6 +128,9 @@ async function aiStatus(){
 $('refresh-ai').addEventListener('click',aiStatus);
 (async()=>{
   try{const data=await api('/api/bootstrap');state.token=data.token;$('metric-revenue').textContent=money(data.metrics.net_revenue);$('metric-orders').textContent=data.metrics.completed_orders.toLocaleString('en-US');$('metric-aov').textContent=money(data.metrics.average_order_value);$('metric-refunds').textContent=`${data.metrics.refund_rate_pct}%`;
+    state.publicDemo=Boolean(data.deployment?.public_demo);
+    const localOption=$('backend').querySelector('[value="local"]');localOption.disabled=!data.ai.local_model_ready;
+    if(state.publicDemo){localOption.disabled=true;localOption.textContent='Qwen — available in local version';$('demo-note').hidden=false;$('workspace-kind').textContent='Public demo';$('history-scope').textContent='Execution results and rejected drafts from your browser session. Temporary and separate from other visitors.';}
     if(data.mode==='ollama'){$('backend').append(node('option','Local Ollama model'));$('backend').lastChild.value='ollama';}
     $('backend').value=data.mode;updateMode();
     data.examples.forEach(e=>{const option=node('option',e.question);option.value=e.question;$('examples').append(option);});trend(data.trend);new ResizeObserver(()=>trend(data.trend)).observe($('trend-chart'));channels(data.channels);context(data);$('draft').disabled=false;

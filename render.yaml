@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: querylens
+    runtime: python
+    plan: free
+    region: singapore
+    repo: https://github.com/deviantecho/querylens
+    branch: main
+    buildCommand: pip install . && python -m querylens --train-ml
+    startCommand: python -m querylens.hosted
+    healthCheckPath: /healthz
+    envVars:
+      - key: QUERYLENS_MODE
+        value: intent
+      - key: OPENBLAS_NUM_THREADS
+        value: "1"
+      - key: OMP_NUM_THREADS
+        value: "1"
+      - key: MKL_NUM_THREADS
+        value: "1"
+      - key: PYTHONUNBUFFERED
+        value: "1"

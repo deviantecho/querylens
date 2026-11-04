@@ -30,12 +30,17 @@ def native(value):
 
 
 class Workbench:
-    def __init__(self, data_dir):
+    def __init__(self, data_dir, *, memory_limit="256MB", threads=2):
         self.data_dir = data_dir
         self.database = data_dir / "commerce.duckdb"
         self.history = data_dir / "history.sqlite3"
         create_dataset(self.database)
         self.lock = threading.RLock()
+        self.database_config = {
+            "enable_external_access": "false",
+            "threads": str(threads),
+            "memory_limit": memory_limit,
+        }
         with self._history() as db:
             db.execute("CREATE TABLE IF NOT EXISTS plans (id TEXT PRIMARY KEY, body TEXT NOT NULL)")
             db.execute(
@@ -55,7 +60,7 @@ class Workbench:
             duckdb.connect(
                 str(self.database),
                 read_only=True,
-                config={"enable_external_access": "false", "threads": "2", "memory_limit": "256MB"},
+                config=self.database_config,
             ) as db,
         ):
             timer = threading.Timer(5, db.interrupt)
@@ -85,11 +90,7 @@ class Workbench:
                 with duckdb.connect(
                     str(self.database),
                     read_only=True,
-                    config={
-                        "enable_external_access": "false",
-                        "threads": "2",
-                        "memory_limit": "256MB",
-                    },
+                    config=self.database_config,
                 ) as db:
                     db.execute("EXPLAIN " + compiled.executable_sql)
             return compiled
@@ -193,6 +194,16 @@ class Workbench:
                 for row in db.execute("SELECT * FROM audit ORDER BY created DESC LIMIT 50")
             ]
 
+    def prune_history(self, keep=2048):
+        """Bound ephemeral public-demo storage; local history is retained by default."""
+        with self._history() as db:
+            for table in ("plans", "audit"):
+                db.execute(
+                    f"DELETE FROM {table} WHERE rowid NOT IN "
+                    f"(SELECT rowid FROM {table} ORDER BY rowid DESC LIMIT ?)",
+                    (keep,),
+                )
+
     def dashboard(self):
         # These are application-owned fixed queries against the semantic model.
         trend = self._run(self.planner.compile(EXAMPLES[1]["sql"]).executable_sql)
@@ -206,7 +217,7 @@ class Workbench:
             "mode": self.ai.default_backend,
             "ai": {
                 "default_backend": self.ai.default_backend,
-                "local_model_ready": self.ai.llm.path.is_file(),
+                "local_model_ready": self.ai.status()["local_model_ready"],
                 "intent_accuracy": self.ai.report["evaluation"]["accuracy"],
             },
             "metrics": {

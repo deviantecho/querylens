@@ -211,9 +211,24 @@ VALIDATION.md      Verification scope and observed behavior
 
 ## Deployment scope
 
-This is a single-user local demonstration. It binds to `127.0.0.1` and checks
-Host headers plus a per-process token for POST requests. The token is a local
-cross-site request control, not a multi-user authentication system.
+The default application is a single-user local demonstration. It binds to
+`127.0.0.1` and checks Host headers plus a per-process token for POST requests.
+
+`render.yaml` defines an optional public demonstration on Render's **free**
+Python web-service plan. It runs `python -m querylens.hosted`, binds to the
+platform port, and permits only the configured public hostname. The live demo
+supports the trained classifier, fixed examples, SQL editor, CSV export, and
+AI Lab. Qwen's 1.12 GB weights do not fit the free instance's 512 MB RAM;
+LLM generation remains a local feature. AI Lab clearly labels saved local-model
+experiments separately from live classifier inference.
+
+Anonymous demo sessions use Secure/HttpOnly/SameSite cookies, separate request
+tokens, session-scoped plans/history, one-hour inactivity expiry, bounded
+storage, and request/concurrency limits. DuckDB has a 128 MB execution memory
+limit in hosted mode. The dataset contains only deterministic synthetic records.
+History resets on restarts; this is not an account-based multi-user product.
+Render's free service sleeps after 15 idle minutes, so the first visit may take
+about a minute to start. Its free usage limits apply.
 
 It currently uses a fixed commerce schema. Hosted authentication, custom-source
 ingestion, scheduled ETL, and multi-tenant permissions are not implemented. A
