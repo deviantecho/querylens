@@ -5,13 +5,48 @@ SQL, consistent revenue metrics, and inspectable results.
 
 QueryLens combines a declarative business-model registry, a scope-aware SQL
 compiler, trained NLP routing, local language-model generation, and a complete
-browser workflow. Inference runs on your computer without a hosted API.
+browser workflow. The local version runs inference on your computer without a
+hosted model API; the public demo runs the trained classifier on its own server.
 
 **[Try the live demo](https://querylens-deviantecho.onrender.com)**
 
 The hosted demo includes the trained intent classifier, SQL workbench, CSV
 exports, and AI Lab. Qwen generation runs in the local version. The first visit
 after inactivity may take about a minute to start.
+
+## Documentation
+
+| Guide | Contents |
+| --- | --- |
+| [Deployment](DEPLOYMENT.md) | Current live URL, Render setup, environment variables, API, limits, and troubleshooting |
+| [Model card](MODEL_CARD.md) | Classifier training, pretrained Qwen inference, retrieval, and evaluation boundaries |
+| [Measured results](reports/README.md) | Saved scores, latency, sample sizes, failed cases, and model provenance |
+| [Validation](VALIDATION.md) | 66-test suite, nine analytical regression cases, CI, and live-demo verification |
+| [Changelog](CHANGELOG.md) | Standalone application, local AI, public hosting, and documentation updates |
+
+## Hosted demo and local application
+
+| Capability | Public demo | Local application |
+| --- | --- | --- |
+| Dashboard, business models, SQL editor, CSV export | Available | Available |
+| Trained intent classifier and fixed examples | Available | Available |
+| Qwen generation with optional retrieved context | Local installation only | Requires the optional runtime and downloaded weights |
+| AI Lab classifier scores | Available | Available |
+| Qwen experiment results | Saved local experiment, displayed for inspection | Run the benchmark to produce a current local report |
+| Query history | Temporary, scoped to a browser session | Stored in the local SQLite database |
+
+To try the hosted workflow, draft "Compare revenue across regions", inspect its
+SQL, select **Run reviewed query**, and export the result. The classifier covers
+nine unfiltered report types. Use the SQL editor for filters, for example:
+
+```sql
+SELECT ROUND(SUM(net_revenue), 2) AS web_revenue
+FROM orders
+WHERE channel = 'Web'
+```
+
+The seeded dataset returns USD 263,750.80 for this query. Every query still
+requires a reviewed plan before execution.
 
 ## Quick start
 
@@ -31,6 +66,9 @@ data in `.querylens/`; the warehouse and history are excluded from version contr
 
 ![QueryLens workspace](screenshot.png)
 
+The screenshot shows the local Qwen workflow. The free hosted demo selects the
+trained classifier and disables the Qwen option.
+
 ## Features
 
 - Revenue dashboard, monthly trends, channel analysis, and CSV exports.
@@ -48,15 +86,16 @@ data in `.querylens/`; the warehouse and history are excluded from version contr
 - Read-only execution, disabled external data access, query deadlines, memory
   limits, bounded results, and local request protection.
 - Independent analytical regression checks and application/API tests.
+- Free public hosting with anonymous browser sessions, private session history,
+  request limits, and a cached startup dashboard.
 
 ## Architecture
 
 ```text
-Browser
-  -> question + retrieved business context
-  -> trained intent classifier or local language model
-       retrieve schema, rules, and relevant training examples
-       generate structured SQL + explanation
+Browser question
+  -> trained classifier: question features -> approved SQL template
+  OR local Qwen: schema + optional retrieved rules/examples -> generated SQL
+  OR fixed example lookup / user-written SQL
   -> read-only SQL AST validation
   -> QueryLens model compiler
        resolve model tables in SQL scopes
@@ -68,7 +107,13 @@ Browser
   -> at most one validation-error repair for local generation
   -> stored plan / human review
   -> read-only DuckDB execution
-  -> results, CSV export, SQLite history
+  -> results, CSV export, execution history
+
+Hosted boundary
+  -> explicit public hostname + HTTPS proxy
+  -> anonymous cookie + per-session request token
+  -> session-owned reviewed plans and history
+  -> rate limits + one planning/execution operation at a time
 ```
 
 The application-specific compiler and model registry are implemented in this
@@ -77,14 +122,21 @@ database engine. Python's standard library provides the HTTP server and SQLite
 history storage. The browser client uses JavaScript and CSS without a frontend
 framework.
 
+`querylens.hosted` starts the public mode; `querylens.demo` owns its bounded
+session state. Public bootstrap requests reuse a dashboard computed at startup.
+Retrieved context supports review in classifier/example modes; classifier
+predictions depend on question text, not on the retrieved documents.
+
 ## Business models
 
 The model definitions live in `querylens/models.json`. For example:
 
 ```json
-"net_revenue": {
-  "type": "DOUBLE",
-  "expression": "CASE WHEN status = 'completed' THEN gross_amount - refund_amount ELSE 0.0 END"
+{
+  "net_revenue": {
+    "type": "DOUBLE",
+    "expression": "CASE WHEN status = 'completed' THEN gross_amount - refund_amount ELSE 0.0 END"
+  }
 }
 ```
 
@@ -131,13 +183,17 @@ python -m querylens.model_download
 python -m querylens
 ```
 
-The downloader pins the resolved repository revision and verifies the published
-SHA-256 checksum. Model weights are local, ignored by Git, and never included in
-the project source archive. Internet access is needed for initial setup;
+The downloader resolves an upstream repository revision, downloads from that
+revision, and verifies the published SHA-256 checksum and file size. It records
+the revision and checksum for a new download. The exact weights used in the
+saved experiment are identified by `reports/model-manifest.json`; a later
+download can resolve a newer upstream revision. Model weights are local,
+ignored by Git, and never included in the project source archive. Internet access is needed for initial setup;
 generation itself is offline. There is no API key or per-query fee.
 
-The default backend automatically selects the local language model when available,
-otherwise the trained classifier. The UI allows switching between those modes
+In the local application's default `auto` mode, a configured `QUERYLENS_MODEL`
+selects Ollama first; otherwise available GGUF weights/runtime select Qwen,
+with the trained classifier as the fallback. The UI allows switching between those modes
 and the fixed example library. `QUERYLENS_MODE=local|intent|examples|ollama` can
 set an explicit default; `QUERYLENS_GGUF` selects another local GGUF file.
 
@@ -152,6 +208,21 @@ with its installed model name; this integration calls only loopback.
 
 See [MODEL_CARD.md](MODEL_CARD.md) for training data, limitations, evaluation
 methodology, and the distinction between the trained classifier and pretrained LLM.
+
+## Measured results
+
+| Experiment | Saved result | Scope |
+| --- | --- | --- |
+| Intent classification | 30/36 correct; macro F1 0.8361 | Nine report intents on curated synthetic test questions |
+| Accepted classifier predictions | 26/27 correct at 27/36 coverage | Dev-selected probability and margin thresholds |
+| Qwen generation without retrieval | 5/12 execution-correct | CPU-local inference, repair disabled |
+| Qwen generation with retrieval | 10/12 execution-correct | Same model and benchmark, repair disabled |
+
+Classification accuracy and SQL execution accuracy measure different tasks.
+The retrieval-assisted score has a wide 95% Wilson interval of 55.2%–95.3%.
+These are small demonstration experiments, with failures retained in
+[the complete reports](reports/README.md), not production accuracy estimates.
+Qwen latency measurements describe the recorded local CPU run, not the web host.
 
 ## Verification
 
@@ -191,6 +262,9 @@ report discloses the actual case count.
 
 ![QueryLens AI Lab](ai-lab.png)
 
+This screenshot records the local experiment view. The public AI Lab also labels
+the Qwen scores as saved local experiments rather than live hosted generation.
+
 ## Source map
 
 ```text
@@ -205,14 +279,19 @@ querylens/
   model_download.py Pinned model download and checksum verification
   ai/               Training, local inference, retrieval, and ablation evaluation
   service.py        Planning, review, execution, history, dashboard
-  server.py         Loopback API and static assets
+  server.py         Local/public HTTP API, request controls, and static assets
+  demo.py           Bounded anonymous sessions, plan ownership, and rate limits
+  hosted.py         Free-host entry point, startup reports, and public hostname
   evaluation.py     Independent analytical result checks
   static/           Browser interface, charts, CSV export
-tests_querylens/    Compiler, application, and API tests
+tests_querylens/    Compiler, AI, application, local API, and public-demo tests
 .github/workflows/ci.yml
+render.yaml        Reproducible free Python web-service configuration
 MODEL_CARD.md      Model design, methodology, and limitations
 reports/           Measured results and pretrained-model provenance
 VALIDATION.md      Verification scope and observed behavior
+DEPLOYMENT.md      Hosted/local operation, API, limits, and troubleshooting
+CHANGELOG.md       Project change history
 ```
 
 ## Deployment scope
@@ -220,7 +299,9 @@ VALIDATION.md      Verification scope and observed behavior
 The default application is a single-user local demonstration. It binds to
 `127.0.0.1` and checks Host headers plus a per-process token for POST requests.
 
-`render.yaml` defines an optional public demonstration on Render's **free**
+The public demo is deployed at
+**[querylens-deviantecho.onrender.com](https://querylens-deviantecho.onrender.com)**.
+`render.yaml` provides a configuration for the same application on Render's **free**
 Python web-service plan. It runs `python -m querylens.hosted`, binds to the
 platform port, and permits only the configured public hostname. The live demo
 supports the trained classifier, fixed examples, SQL editor, CSV export, and
@@ -235,6 +316,9 @@ limit in hosted mode. The dataset contains only deterministic synthetic records.
 History resets on restarts; this is not an account-based multi-user product.
 Render's free service sleeps after 15 idle minutes, so the first visit may take
 about a minute to start. Its free usage limits apply.
+
+See [the deployment guide](DEPLOYMENT.md) for the active service configuration,
+local-versus-hosted settings, HTTP API, retention limits, and restart behavior.
 
 It currently uses a fixed commerce schema. Hosted authentication, custom-source
 ingestion, scheduled ETL, and multi-tenant permissions are not implemented. A

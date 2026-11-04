@@ -1,9 +1,31 @@
 # Measured local AI results
 
+Documentation reviewed: 5 November 2026. The underlying JSON reports preserve
+the original experiment outputs; this documentation update does not replace
+them with a fresh benchmark run.
+
 These results come from actual local classifier training and CPU-local language
 model inference on the bundled synthetic commerce warehouse. No hosted API was
 used. The corpus is small and curated, so scores are demonstration results, not
 production accuracy estimates.
+
+## Live demo and archived evidence
+
+The [public AI Lab](https://querylens-deviantecho.onrender.com) displays the
+saved generation report below. It runs the trained intent classifier live;
+Qwen generation is available in the local installation. The LLM latency figures
+were measured on the local CPU described below, not on the free Render host.
+
+| File | Evidence |
+| --- | --- |
+| [intent-report.json](intent-report.json) | Classifier training hash, thresholds, versions, test predictions, OOD outcomes, per-class scores, and confusion matrix |
+| [ai-evaluation.json](ai-evaluation.json) | Four inference variants, generated SQL, outputs/errors, correctness, latency, intervals, and unsupported-request outcomes |
+| [model-manifest.json](model-manifest.json) | Exact pretrained model repository revision, file, checksum, byte size, license, and source URL used in the recorded run |
+
+The generation run was saved at 2026-11-04 20:09:39 UTC, which is
+5 November 2026 at 01:39:39 IST. Its model-definition fingerprint is
+`5ee8ade794e8f1fc`. The fingerprint identifies the business-model definitions;
+it is separate from the package version and Git commit.
 
 ## Trained intent classifier
 
@@ -20,7 +42,7 @@ There are also 8 dev and 12 test unsupported questions.
 
 The threshold uses development data only. The test confusion matrix, per-class
 metrics, individual predictions, model/library versions, and training-data hash
-are in `intent-report.json`. Classifier routing is a bounded template-based
+are in [intent-report.json](intent-report.json). Classifier routing is a bounded template-based
 baseline; filtered questions in the SQL benchmark expose its limitations.
 
 ## Generated SQL: execution accuracy
@@ -41,7 +63,7 @@ For the retrieval-assisted result, the 95% Wilson interval is approximately
 descriptive single-run ablation, not proof of general or statistically established
 improvement. Example/intent baselines have a narrower supported task scope.
 
-The full report retains all outputs and failures in `ai-evaluation.json`. Two
+The full report retains all outputs and failures in [ai-evaluation.json](ai-evaluation.json). Two
 retrieval-assisted cases failed: one used an unfiltered revenue numerator for a
 Partner-only average, and another referenced the customer region without the
 required join. Valid SQL can still be semantically wrong.
@@ -61,4 +83,30 @@ returned plausible-looking but wrong queries for unavailable profit/forecast dat
 - Training and evaluation datasets are in `querylens/ai/data/`; the test split is
   excluded from training and retrieval indexing.
 
-See MODEL_CARD.md for methodology, limitations, and reproduction commands.
+## Reproduce or replace a report
+
+From the repository root after installation:
+
+```sh
+python -m querylens --train-ml
+python -m querylens --ai-eval --skip-llm
+# Requires the optional local runtime and downloaded Qwen weights:
+python -m querylens --ai-eval
+```
+
+Classifier artifacts/report are generated under `.querylens/ai/`. Both
+generation commands write `.querylens/reports/ai-evaluation.json`; `--skip-llm`
+produces only the two inexpensive baselines and replaces that local output.
+The public entry point copies the checked-in `reports/ai-evaluation.json` into
+its runtime report directory at startup.
+
+Updating public evidence is a separate, deliberate step: review the full new
+run, compare its manifest and sample counts, retain failures, then update the
+checked-in report and every table that cites it. A later model download may
+resolve a different upstream revision; the archived manifest identifies the
+weights used here. Keep `.querylens/`, weights, databases, and joblib artifacts
+out of Git.
+
+See the [model card](../MODEL_CARD.md) for methodology and limitations,
+[validation guide](../VALIDATION.md) for application tests, and
+[deployment guide](../DEPLOYMENT.md) for hosted behavior.

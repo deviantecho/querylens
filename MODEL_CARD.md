@@ -1,4 +1,7 @@
-# QueryLens local AI model card
+# QueryLens AI model card
+
+Documentation reviewed: 5 November 2026. The recorded experiment outputs in
+[`reports/`](reports/README.md) retain their original measurements and timestamps.
 
 ## Components and intended use
 
@@ -10,6 +13,19 @@ It was not pretrained or fine-tuned by this project.
 The target is an English, synthetic commerce analytics demonstration using two
 modeled tables. Neither model is suitable for unsupervised financial decisions,
 arbitrary databases, or claims of general business-question accuracy.
+
+## Where inference runs
+
+The [public demo](https://querylens-deviantecho.onrender.com) runs the trained
+intent classifier and fixed example library. Its SQL editor accepts reviewed
+read-only queries. The hosted entry point forces intent mode; the public API
+rejects requests for Qwen or Ollama generation, and the UI disables Qwen.
+
+Qwen GGUF and optional Ollama generation run in the local installation. The
+free Render instance has 512 MB RAM, so it does not load the 1.12 GB GGUF file.
+The public AI Lab displays a copy of the saved local Qwen evaluation alongside
+the classifier report. Displaying those scores does not run the language model
+on the hosted service or measure hosted LLM latency. See [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Supervised NLP classifier
 
@@ -49,13 +65,20 @@ joblib is not an untrusted-file format.
 - Runtime: llama-cpp-python / llama.cpp, CPU-local, up to 8 threads.
 - Context: 4,096 tokens; generation limit: 384 tokens; temperature 0; seed 42.
 - Output: grammar-constrained JSON with SQL and a short explanation.
-- Provenance: `.querylens/models/model-manifest.json` records the pinned upstream
-  revision, published SHA-256 checksum, size, filename, and license.
+- Provenance: a new download writes `.querylens/models/model-manifest.json`
+  with its resolved upstream revision, verified SHA-256, size, filename, and license.
+  [`reports/model-manifest.json`](reports/model-manifest.json) preserves the
+  exact provenance of the saved experiment.
 - Setup downloads data; inference does not call any hosted provider.
 
 This is quantized inference, not quantization research or language-model training.
 The explanation can be inaccurate even when SQL is valid. Inspect the SQL and
 business assumptions. CPU latency depends on hardware and prompt/output length.
+
+The setup command resolves the publisher's current repository metadata before
+downloading a revision-specific file. It does not guarantee that a later setup
+downloads the same revision as the archived experiment. Compare the manifest
+and checksum before presenting a rerun as reproduction of those exact weights.
 
 ## Retrieval
 
@@ -64,6 +87,12 @@ rank business rules and SQL examples. It always includes the small schema.
 Examples come only from the classifier training questions; dev/test questions
 and SQL benchmark prompts are not indexed. This is sparse lexical retrieval,
 not a pretrained neural embedding model or a vector database.
+
+The default retrieval response contains three ranked business rules, both
+modeled schemas, and three training examples with distinct intents. The index
+contains 116 documents. The intent classifier predicts from the question text
+alone; retrieval provides review context in intent/example modes. The retrieval
+toggle changes the Qwen prompt in local generation mode.
 
 ## Generation evaluation
 
@@ -94,15 +123,29 @@ this test set require a fresh untouched test set for a new unbiased claim.
 
 ## Reproduce
 
+Install the project using the [README](README.md#quick-start). The final command
+below additionally requires the optional llama.cpp runtime and GGUF weights:
+
 ```sh
 python -m querylens --train-ml
 python -m querylens --ai-eval --skip-llm
 python -m querylens --ai-eval
 ```
 
+Training saves its model/report under `.querylens/ai/`. Evaluation writes
+`.querylens/reports/ai-evaluation.json`; a `--skip-llm` run includes only the two
+inexpensive baselines and replaces that local file. The public host copies the
+checked-in four-variant report at startup. The JSON files in `reports/` are
+archived evidence; rerunning a command does not update them automatically.
+
+The recorded classifier achieved 30/36 test accuracy, macro F1 0.8361, 27/36
+accepted coverage, and 26/27 accepted accuracy; all 12 test unsupported questions
+were rejected. Qwen execution accuracy was 5/12 without retrieval and 10/12 with
+retrieval. See [the results guide](reports/README.md) for intervals and failures.
+
 Primary implementation references:
 
-- https://scikit-learn.org/stable/modules/feature_extraction.html
-- https://scikit-learn.org/stable/modules/calibration.html
-- https://llama-cpp-python.readthedocs.io/en/latest/
-- https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF
+- [scikit-learn text features](https://scikit-learn.org/stable/modules/feature_extraction.html)
+- [scikit-learn probability calibration](https://scikit-learn.org/stable/modules/calibration.html)
+- [llama-cpp-python](https://llama-cpp-python.readthedocs.io/en/latest/)
+- [Qwen GGUF publisher](https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF)
