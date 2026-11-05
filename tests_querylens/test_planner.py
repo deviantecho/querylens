@@ -52,7 +52,13 @@ def execute(sql, registry=None):
 def test_package_uses_independent_database_parser_and_ml_dependencies():
     dependencies = requires("querylens-analytics")
     runtime = [d for d in dependencies if "extra ==" not in d]
-    assert sorted(d.split("==")[0] for d in runtime) == ["duckdb", "scikit-learn", "sqlglot"]
+    assert sorted(d.split("==")[0] for d in runtime) == [
+        "defusedxml",
+        "duckdb",
+        "openpyxl",
+        "scikit-learn",
+        "sqlglot",
+    ]
 
 
 def test_boolean_filters_are_supported():
