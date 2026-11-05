@@ -28,10 +28,15 @@ service. The display name is distinct from the public hostname: renaming a
 service did not rename its assigned address. The previous demo deployment was
 retired after the branded hostname was verified.
 
-The service is linked to GitHub with automatic deploys enabled. A normal commit
-to `main` rebuilds the app. Documentation-only commits can use `[skip render]`
-to leave the working deployment unchanged while GitHub Actions still verifies
-the repository. See [Render deploy behavior](https://render.com/docs/deploys).
+The service reports auto-deploy enabled with a commit trigger, but neither
+0.4.0 source push queued a Render build or deployment event. The feature release
+was therefore started explicitly after CI passed. Check the deploy queue after
+a push instead of assuming the flag has delivered the new code; do not trigger
+a duplicate when a matching deployment is already running. Render requires a
+connected Git-provider integration for automatic deploys; a public-repository
+URL alone does not provide it. See [Render deploy behavior](https://render.com/docs/deploys).
+Documentation-only commits can use `[skip render]` to avoid an automatic rebuild
+when that integration is active, while GitHub Actions still verifies the repo.
 
 ## What visitors can use
 

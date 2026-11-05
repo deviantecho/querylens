@@ -11,7 +11,9 @@ added to the previous 66-test compiler, workbench, AI, and public-demo suite.
 All 97 passed locally on Python 3.11 / Windows. The independent analytical
 regression command also passed **9/9** cases. The same checks run in
 [GitHub Actions](https://github.com/deviantecho/querylens/actions/workflows/ci.yml)
-on Python 3.11 / Ubuntu. The earlier 66-test public-demo run remains
+on Python 3.11 / Ubuntu; the 0.4.0 upload implementation passed in
+[this CI run](https://github.com/deviantecho/querylens/actions/runs/41978224920).
+The earlier 66-test public-demo run remains
 [available here](https://github.com/deviantecho/querylens/actions/runs/41915141740)
 as historical evidence; it does not verify the new upload implementation.
 
@@ -89,6 +91,12 @@ The current public URL was verified over HTTPS after deployment. Checks included
   session's plan, plus session-specific request tokens.
 - AI Lab showing the trained classifier and all four saved generation variants.
 - A real browser loading the new hostname and exposing the expected demo controls.
+- Version 0.4.0 serving the upload client after Render deployment
+  `dep-dbm1r66c6qcc73fnjgsg` became live at application commit `16c9302`.
+- A real HTTPS upload/preview/import/intent-query/reset sequence using three
+  synthetic INR orders dated March–April 2024. Preview and query both returned
+  net revenue 80; AOV was 40. A separate session retained the sample-shop
+  revenue of USD 810,152.78, and reset restored the caller's sample shop.
 - The GitHub repository's website field pointing to the current public URL.
 
 The free host runs the classifier, examples, and SQL editor. It does not run
