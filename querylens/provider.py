@@ -13,7 +13,7 @@ def mode():
     return "ollama" if os.environ.get("QUERYLENS_MODEL") else "examples"
 
 
-def generate(question, context):
+def generate(question, context, *, rules=None):
     if mode() == "examples":
         example = example_for(question)
         if example is None:
@@ -39,7 +39,7 @@ def generate(question, context):
         "\nSCHEMA: "
         + json.dumps(SCHEMA)
         + "\nBUSINESS RULES: "
-        + json.dumps(RULES)
+        + json.dumps(RULES if rules is None else rules)
         + "\nRETRIEVED CONTEXT: "
         + json.dumps(context)
     )

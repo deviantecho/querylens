@@ -1,7 +1,7 @@
 'use strict';
 const $ = (id) => document.getElementById(id);
-const state = {token: null, plan: null, result: null, busy: false, publicDemo: false};
-const money = (n) => new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 0}).format(n);
+const state = {token: null, plan: null, result: null, busy: false, publicDemo: false, currency: 'USD', dataset: null, trendData: null};
+const money = (n) => n === null ? '—' : new Intl.NumberFormat('en-US', {style: 'currency', currency: state.currency, maximumFractionDigits: 0}).format(n);
 const node = (tag, text, cls) => { const n = document.createElement(tag); if (text !== undefined) n.textContent = text; if (cls) n.className = cls; return n; };
 
 async function api(path, body) {
@@ -27,6 +27,8 @@ function busy(value, message) {
   $('draft').disabled = value || !state.token;
   $('draft').textContent = value ? message : 'Draft SQL ↗';
   $('run').disabled = value || !state.plan;
+  $('open-import').disabled = value;
+  document.querySelector('[data-view="import-view"]').disabled = value;
   $('query-status').textContent = value ? message : 'Ready';
 }
 function table(target, columns, rows) {
@@ -42,22 +44,25 @@ function trend(data) {
   const svgNS = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(svgNS, 'svg');
   const width = Math.max(280, $('trend-chart').clientWidth);
-  svg.setAttribute('viewBox', `0 0 ${width} 190`); svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', 'Monthly net revenue in USD, January through December 2025');
+  svg.setAttribute('viewBox', `0 0 ${width} 190`); svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', `Monthly net revenue in ${state.currency} for ${state.dataset?.shop_name || 'the shop'}`);
   const add = (tag, attrs, text) => {const n = document.createElementNS(svgNS, tag); Object.entries(attrs).forEach(([k,v]) => n.setAttribute(k, v)); if (text !== undefined) n.textContent = text; svg.append(n); return n;};
-  const values = data.rows.map((r) => r[1]), max = Math.ceil(Math.max(...values) / 20000) * 20000;
-  const x = (i) => 46 + i * (width - 64) / 11, y = (v) => 150 - v / max * 125;
-  for(let i=0;i<=3;i++){const v = max * i / 3; add('line', {x1:44,y1:y(v),x2:width-8,y2:y(v),class:'gridline'}); add('text',{x:2,y:y(v)+4}, `${Math.round(v/1000)}k`);}
+  const values = data.rows.map((r) => Number(r[1]) || 0), max = Math.max(1, ...values);
+  const x = (i) => values.length === 1 ? width / 2 : 46 + i * (width - 64) / Math.max(1, values.length - 1), y = (v) => 150 - v / max * 125;
+  const compact = new Intl.NumberFormat('en-US', {notation:'compact', maximumFractionDigits:1});
+  for(let i=0;i<=3;i++){const v = max * i / 3; add('line', {x1:44,y1:y(v),x2:width-8,y2:y(v),class:'gridline'}); add('text',{x:2,y:y(v)+4}, compact.format(v));}
   const points = values.map((v,i) => `${x(i)},${y(v)}`).join(' ');
-  add('polygon', {points:`${x(0)},150 ${points} ${x(11)},150`,class:'area'});
+  add('polygon', {points:`${x(0)},150 ${points} ${x(values.length-1)},150`,class:'area'});
   add('polyline', {points,class:'line'});
-  values.forEach((v,i) => {const dot = add('circle',{cx:x(i),cy:y(v),r:3,class:'point'}); const title=document.createElementNS(svgNS,'title'); title.textContent=`${data.rows[i][0].slice(0,7)}: ${money(v)}`;dot.append(title);if(i%2===0||i===11)add('text',{x:x(i),y:179,'text-anchor':'middle'},new Date(`${data.rows[i][0].slice(0,10)}T12:00:00Z`).toLocaleDateString('en-US',{month:'short',timeZone:'UTC'}));});
+  values.forEach((v,i) => {const dot = add('circle',{cx:x(i),cy:y(v),r:3,class:'point'}); const title=document.createElementNS(svgNS,'title'); title.textContent=`${data.rows[i][0].slice(0,7)}: ${money(v)}`;dot.append(title);if(i%Math.max(1,Math.ceil(values.length/6))===0||i===values.length-1)add('text',{x:x(i),y:179,'text-anchor':'middle'},new Date(`${data.rows[i][0].slice(0,10)}T12:00:00Z`).toLocaleDateString('en-US',{month:'short',year:'2-digit',timeZone:'UTC'}));});
   $('trend-chart').replaceChildren(svg); $('trend-chart').setAttribute('aria-busy','false');
 }
 function channels(data) {
-  const max = Math.max(...data.rows.map(r=>r[1]));
+  $('channel-chart').replaceChildren();
+  const max = Math.max(1,...data.rows.map(r=>r[1]));
   data.rows.forEach(([label,value])=>{const row=node('div',undefined,'channel-row'), text=node('div');text.append(node('span',label),node('strong',money(value))); const track=node('div',undefined,'bar-track'),bar=node('div',undefined,'bar');bar.style.width=`${value/max*100}%`;track.append(bar);row.append(text,track);$('channel-chart').append(row);});
 }
 function context(data) {
+  $('schema-list').replaceChildren(); $('rules-list').replaceChildren();
   Object.entries(data.schema).forEach(([name,schema])=>{const s=node('section');s.append(node('h2',name),node('p',schema.description));Object.entries(schema.columns).forEach(([column,type])=>{const r=node('div',undefined,'column');r.append(node('span',column),node('span',type));s.append(r);});$('schema-list').append(s);});
   data.rules.forEach(r=>{const section=node('section',undefined,'rule');section.append(node('h3',r.title),node('p',r.text));$('rules-list').append(section);});
 }
@@ -66,14 +71,17 @@ async function history() {
   try {const entries=await api('/api/history');table($('history-table'),['time','question','source','status','rows','duration (ms)','detail'],entries.map(r=>[new Date(r.created).toLocaleString(),r.question,r.source,r.status,r.row_count,r.duration_ms,r.detail]));$('history-status').textContent=entries.length?`${entries.length} recent records`:'Run a reviewed query to start your history.';}
   catch(e){$('history-status').textContent=e.message;}
 }
-document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{
-  document.querySelectorAll('.view').forEach(v=>v.hidden=v.id!==button.dataset.view);
+function showView(id) {
+  const button=document.querySelector(`[data-view="${id}"]`);
+  document.querySelectorAll('.view').forEach(v=>v.hidden=v.id!==id);
   document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('active',b===button);if(b===button)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   $('breadcrumb').textContent=button.textContent.replace(/\d/g,'').trim();
-  if(button.dataset.view==='history')history();
-  if(button.dataset.view==='ai-lab')aiStatus();
+  if(id==='history')history();
+  if(id==='ai-lab')aiStatus();
   $('main').focus();
-}));
+  window.scrollTo({top:0,behavior:'instant'});
+}
+document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>showView(button.dataset.view)));
 $('refresh-history').addEventListener('click',history);
 ['question','sql-input','manual','retrieval'].forEach(id=>$(id).addEventListener('input',()=>{invalidate();error(null);}));
 $('backend').addEventListener('change',()=>{invalidate();error(null);updateMode();});
@@ -126,13 +134,30 @@ async function aiStatus(){
   }catch(e){$('ai-status').textContent=e.message;}
 }
 $('refresh-ai').addEventListener('click',aiStatus);
-(async()=>{
-  try{const data=await api('/api/bootstrap');state.token=data.token;$('metric-revenue').textContent=money(data.metrics.net_revenue);$('metric-orders').textContent=data.metrics.completed_orders.toLocaleString('en-US');$('metric-aov').textContent=money(data.metrics.average_order_value);$('metric-refunds').textContent=`${data.metrics.refund_rate_pct}%`;
+function applyWorkspace(data) {
+    state.token=data.token;state.dataset=data.dataset;state.currency=data.dataset.currency;state.trendData=data.trend;invalidate();error(null);
+    $('metric-revenue').textContent=money(data.metrics.net_revenue);$('metric-orders').textContent=data.metrics.completed_orders.toLocaleString('en-US');$('metric-aov').textContent=money(data.metrics.average_order_value);$('metric-refunds').textContent=data.metrics.refund_rate_pct===null?'—':`${data.metrics.refund_rate_pct}%`;
     state.publicDemo=Boolean(data.deployment?.public_demo);
     const localOption=$('backend').querySelector('[value="local"]');localOption.disabled=!data.ai.local_model_ready;
-    if(state.publicDemo){localOption.disabled=true;localOption.textContent='Qwen — available in local version';$('demo-note').hidden=false;$('workspace-kind').textContent='Public demo';$('history-scope').textContent='Execution results and rejected drafts from your browser session. Temporary and separate from other visitors.';}
-    if(data.mode==='ollama'){$('backend').append(node('option','Local Ollama model'));$('backend').lastChild.value='ollama';}
+    if(state.publicDemo){localOption.disabled=true;localOption.textContent='Qwen — available in local version';$('demo-note').hidden=false;$('history-scope').textContent='Execution results and rejected drafts from your current browser workspace. Temporary and separate from other visitors.';}
+    const uploaded=data.dataset.kind==='upload';
+    $('workspace-kind').textContent=uploaded?'Your shop · temporary':state.publicDemo?'Public demo':'Local workspace';
+    $('dataset-title').textContent=data.dataset.shop_name;
+    $('dataset-detail').textContent=uploaded?`${data.dataset.filename} · ${data.dataset.order_count.toLocaleString()} orders · ${state.currency} · Temporary upload`:'Synthetic commerce data · USD · Sample shop';
+    $('dataset-footer').textContent=uploaded?`${data.dataset.shop_name} · Uploaded orders · ${state.currency}`:'Reproducible demo · Synthetic commerce data · USD';
+    $('reporting-period').textContent=data.period;$('trend-unit').textContent=`Monthly net revenue · ${state.currency}`;$('trend-count').textContent=`${data.trend.rows.length} ${data.trend.rows.length===1?'month':'months'} with orders`;
+    $('dataset-warnings').hidden=!data.dataset.warnings.length;$('dataset-warnings').textContent=data.dataset.warnings.join(' ');
+    $('upload-active').hidden=!uploaded;$('upload-active-description').textContent=uploaded?`${data.dataset.shop_name}: ${data.dataset.order_count.toLocaleString()} orders, ${data.period}, ${state.currency}. Your upload is temporary; keep the original file.`:'';
+    $('open-import').textContent=uploaded?'Manage shop data →':'Use your shop data →';
+    $('history-table').replaceChildren();$('history-status').textContent='';
+    if(data.mode==='ollama'&&!$('backend').querySelector('[value="ollama"]')){$('backend').append(node('option','Local Ollama model'));$('backend').lastChild.value='ollama';}
     $('backend').value=data.mode;updateMode();
-    data.examples.forEach(e=>{const option=node('option',e.question);option.value=e.question;$('examples').append(option);});trend(data.trend);new ResizeObserver(()=>trend(data.trend)).observe($('trend-chart'));channels(data.channels);context(data);$('draft').disabled=false;
+    $('examples').replaceChildren(node('option','Try an example question'));$('examples').firstChild.value='';
+    data.examples.forEach(e=>{const option=node('option',e.question);option.value=e.question;$('examples').append(option);});trend(data.trend);channels(data.channels);context(data);$('draft').disabled=false;
+    $('boot-error').hidden=true;
+}
+new ResizeObserver(()=>{if(state.trendData)trend(state.trendData);}).observe($('trend-chart'));
+(async()=>{
+  try{applyWorkspace(await api('/api/bootstrap'));
   }catch(e){$('boot-error').textContent=`Could not load the workspace: ${e.message}. Refresh after checking the local server.`;$('boot-error').hidden=false;$('mode').textContent='Connection unavailable';}
 })();

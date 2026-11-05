@@ -7,6 +7,7 @@
   <title>QueryLens | Revenue workspace</title>
   <link rel="stylesheet" href="/style.css">
   <script src="/app.js" defer></script>
+  <script src="/upload.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to workspace</a>
@@ -18,24 +19,27 @@
       <button class="nav-item" data-view="context">Business context <span>02</span></button>
       <button class="nav-item" data-view="history">Query history <span>03</span></button>
       <button class="nav-item" data-view="ai-lab">AI Lab <span>04</span></button>
+      <button class="nav-item" data-view="import-view">Your shop data <span>05</span></button>
     </nav>
     <div class="sidebar-note"><span class="status" id="workspace-kind">Local workspace</span><p>Business questions.<br>Inspectable answers.</p><small>QueryLens modeling and analytics.</small></div>
   </aside>
   <div class="shell">
-    <header class="topbar"><span>Analytics / <strong id="breadcrumb">Workspace</strong></span><span class="period">Jan - Dec 2025</span></header>
+    <header class="topbar"><span>Analytics / <strong id="breadcrumb">Workspace</strong></span><span class="period" id="reporting-period">Jan - Dec 2025</span></header>
     <main id="main" tabindex="-1">
       <section id="workspace" class="view">
         <div class="page-heading"><div><p class="eyebrow">Your revenue, in focus</p><h1>A clearer view of the business.</h1><p>Ask a question. Inspect the SQL. Follow the numbers.</p></div><span class="mode-badge" id="mode">Connecting...</span></div>
         <p id="boot-error" class="error" role="alert" hidden></p>
-        <p id="demo-note" class="mode-note" hidden>Free live demo: try the trained intent classifier, examples, SQL editor, and CSV exports on synthetic data. Qwen generation runs in the local version. AI Lab includes saved local Qwen experiments. Your query history belongs to this browser session and resets after inactivity or a server restart. <a href="https://github.com/deviantecho/querylens" target="_blank" rel="noopener noreferrer">Source and local setup ↗</a></p>
+        <p id="demo-note" class="mode-note" hidden>Free live demo: start with the sample shop or upload your own orders. Uploads and query history are temporary and separate from other browser sessions. Qwen generation runs in the local version; AI Lab shows saved local experiments. <a href="https://github.com/deviantecho/querylens" target="_blank" rel="noopener noreferrer">Source and local setup ↗</a></p>
+        <div class="dataset-strip"><div><strong id="dataset-title">Sample shop</strong><p id="dataset-detail">Synthetic commerce data · USD</p></div><button type="button" class="secondary" id="open-import">Use your shop data →</button></div>
+        <p id="dataset-warnings" class="mode-note" hidden></p>
         <div class="metrics" aria-label="Revenue summary">
           <div><span>Net revenue</span><strong id="metric-revenue">...</strong><small>Completed orders, after refunds</small></div>
-          <div><span>Completed orders</span><strong id="metric-orders">...</strong><small>Across the full reporting year</small></div>
+          <div><span>Completed orders</span><strong id="metric-orders">...</strong><small>Across the reporting window</small></div>
           <div><span>Average order value</span><strong id="metric-aov">...</strong><small>Net revenue per completed order</small></div>
-          <div><span>Refund rate</span><strong id="metric-refunds">...</strong><small>Refunded dollars / gross revenue</small></div>
+          <div><span>Refund rate</span><strong id="metric-refunds">...</strong><small>Refunded amount / gross revenue</small></div>
         </div>
         <div class="charts">
-          <section class="panel trend"><div class="panel-heading"><div><h2>Revenue through the year</h2><p>Monthly net revenue · USD</p></div><span class="tag">12 months</span></div><div id="trend-chart" class="chart" aria-busy="true"><p class="muted">Loading revenue trend...</p></div></section>
+          <section class="panel trend"><div class="panel-heading"><div><h2>Revenue over time</h2><p id="trend-unit">Monthly net revenue · USD</p></div><span class="tag" id="trend-count">12 months</span></div><div id="trend-chart" class="chart" aria-busy="true"><p class="muted">Loading revenue trend...</p></div></section>
           <section class="panel channels"><div class="panel-heading"><div><h2>Where it comes from</h2><p>Net revenue by sales channel</p></div></div><div id="channel-chart" class="channel-chart"></div><p class="chart-caption">All channels use the same revenue definition.</p></section>
         </div>
         <section class="query-section" aria-labelledby="query-title">
@@ -62,10 +66,43 @@
           </div>
           <section id="results" class="results" hidden><div class="panel-heading"><div><h3>Query results</h3><p id="result-meta"></p></div><button class="secondary" id="export">Export CSV</button></div><div class="table-wrap" id="result-table"></div></section>
         </section>
-        <footer>QueryLens <span>Reproducible demo · Synthetic commerce data · USD</span></footer>
+        <footer>QueryLens <span id="dataset-footer">Reproducible demo · Synthetic commerce data · USD</span></footer>
       </section>
       <section id="context" class="view" hidden><div class="page-heading"><div><p class="eyebrow">One shared definition</p><h1>Know what the numbers mean.</h1><p>The schema and business rules used to plan every query.</p></div></div><div id="schema-list" class="schema-grid"></div><div class="section-heading"><h2>Business rules</h2></div><div id="rules-list" class="rules-list"></div></section>
       <section id="history" class="view" hidden><div class="page-heading"><div><p class="eyebrow">An inspectable trail</p><h1>Every query leaves a record.</h1><p id="history-scope">Execution results and rejected drafts from this local workspace.</p></div><button class="secondary" id="refresh-history">Refresh history</button></div><p id="history-status" role="status"></p><div id="history-table" class="table-wrap"></div></section>
+      <section id="import-view" class="view" hidden aria-labelledby="import-title">
+        <div class="page-heading"><div><p class="eyebrow">Bring your own numbers</p><h1 id="import-title">A workspace for your shop.</h1><p>Upload an orders sheet, match its columns, and check the totals before switching.</p></div><a class="secondary" href="/orders-template.csv" download="querylens-orders-template.csv">Download example CSV ↓</a></div>
+        <p class="import-privacy">Your file is sent to this QueryLens server for processing and is never added to AI training. Public uploads are separate for each browser session; a locally running app uses one shared workspace. Uploads are temporary: reset removes them, and a server restart ends the workspace. Public sessions expire after one hour of inactivity or capacity eviction; expired files are removed on the next session cleanup. Keep your original file.</p>
+        <ol class="import-steps" aria-label="Upload progress"><li id="upload-step-1" aria-current="step">1 <span>Choose a file</span></li><li id="upload-step-2">2 <span>Match columns</span></li><li id="upload-step-3">3 <span>Check and import</span></li></ol>
+        <div id="upload-message" class="mode-note" role="status" aria-live="polite"></div>
+        <p id="upload-error" class="error" role="alert" hidden></p>
+        <section id="upload-choose" class="panel upload-panel">
+          <h2>Start with your orders export</h2><p>Use CSV or Excel (.xlsx), up to 2 MB and 10,000 orders. Put column names in the first row and one complete order in each row. Combine product line items first. Formula cells need to be exported as values.</p>
+          <label for="orders-file">Orders spreadsheet</label><input id="orders-file" type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+          <button type="button" class="primary" id="inspect-upload" disabled>Read spreadsheet →</button>
+        </section>
+        <section id="upload-matching" hidden>
+          <div class="panel upload-panel"><div class="panel-heading"><div><h2 id="upload-file-title">Match your columns</h2><p id="upload-row-count"></p></div><button type="button" class="secondary" id="upload-start-over">Choose another file</button></div>
+            <div id="sheet-picker" hidden><label for="upload-sheet">Orders worksheet</label><select id="upload-sheet"></select><p class="mode-note">Choose one orders sheet. Other worksheets are not combined or imported.</p></div>
+            <div class="table-wrap" id="upload-source-preview"></div>
+          </div>
+          <form id="upload-mapping-form" class="panel upload-panel">
+            <h2>Tell QueryLens what each column means</h2><p>Order date and order amount are required. Leave other fields unused when they are absent. Customer names need a stable customer ID; names alone are not treated as unique people.</p>
+            <div class="mapping-grid" id="upload-column-matches"></div>
+            <div class="import-options"><div><label for="upload-shop-name">Shop name</label><input id="upload-shop-name" type="text" maxlength="80" value="My shop" required></div><div><label for="upload-currency">Currency for every order</label><select id="upload-currency"></select></div><div><label for="upload-date-format">Text date format</label><select id="upload-date-format"><option value="iso">YYYY-MM-DD (Excel dates also work)</option><option value="dmy">DD/MM/YYYY</option><option value="mdy">MM/DD/YYYY</option></select></div><div><label for="upload-number-format">Number format</label><select id="upload-number-format"><option value=".">1,234.56</option><option value=",">1.234,56</option></select></div></div>
+            <section id="upload-status-section" hidden><h3>How should each status be counted?</h3><p>Paid or refunded orders usually count as completed. Cancelled orders contribute zero revenue. Decide how your export's statuses should be treated.</p><div id="upload-status-matches" class="mapping-grid"></div></section>
+            <h3>Review the assumptions</h3><ul id="upload-assumptions" class="assumptions"></ul>
+            <label class="check"><input id="upload-grain-confirm" type="checkbox" required> Each row represents one whole order, not an individual product or a repeated order total.</label>
+            <label class="check"><input id="upload-defaults-confirm" type="checkbox" required> I reviewed the missing-column assumptions. Amounts are before refunds and all rows use the selected currency.</label>
+            <button type="submit" class="primary" id="validate-upload">Check my data →</button>
+          </form>
+        </section>
+        <section id="upload-review" class="panel upload-panel" hidden>
+          <h2>Check these totals against your export</h2><p id="upload-summary"></p><div id="upload-totals" class="table-wrap"></div><ul id="upload-review-warnings" class="assumptions"></ul><h3>A few normalized orders</h3><p class="mode-note">Original order and customer identifiers are translated into internal numeric IDs.</p><div id="upload-normalized-preview" class="table-wrap"></div>
+          <p class="mode-note">Importing switches this workspace to this sheet and clears its reviewed plans and visible query history. The sample shop and other visitors' data stay separate. Your original spreadsheet is unchanged.</p><div class="import-actions"><button type="button" class="secondary" id="upload-edit-mapping">Back to column matching</button><button type="button" class="primary" id="commit-upload">Import and open my shop →</button></div>
+        </section>
+        <section id="upload-active" class="panel upload-panel" hidden><h2>Your shop is ready</h2><p id="upload-active-description"></p><div class="import-actions"><button type="button" class="primary" id="upload-open-workspace">Explore my numbers →</button><button type="button" class="secondary" id="reset-upload">Remove uploaded data and use sample shop</button></div></section>
+      </section>
       <section id="ai-lab" class="view" hidden>
         <div class="page-heading"><div><p class="eyebrow">Models, measured</p><h1>Experiments you can inspect.</h1><p>Local NLP training, retrieval, and execution-based generation evaluation.</p></div><button class="secondary" id="refresh-ai">Refresh results</button></div>
         <p id="ai-status" role="status">Loading local AI status...</p>

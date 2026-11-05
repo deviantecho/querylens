@@ -9,10 +9,13 @@ from importlib.resources import files
 from urllib.parse import urlsplit
 
 from querylens.policy import QueryError
+from querylens.workspaces import UploadBudget, UploadWorkspace
 
 
 def make_server(workbench, port, *, public_demo=False, allowed_hosts=()):
     token = secrets.token_urlsafe(32)
+    budget = UploadBudget()
+    local_workspace = UploadWorkspace()
     if public_demo and not allowed_hosts:
         raise ValueError("Public demo requires an explicit allowed hostname.")
     if public_demo:
@@ -22,6 +25,32 @@ def make_server(workbench, port, *, public_demo=False, allowed_hosts=()):
         operations = threading.BoundedSemaphore(1)
         dashboard = workbench.dashboard()
     hosts = set(allowed_hosts)
+
+    def bootstrap(session):
+        workspace = session.workspace if public_demo else local_workspace
+        with workspace.lock:
+            workspace.active(workbench)
+            data = workspace.dashboard or (dashboard if public_demo else workbench.dashboard())
+            return {
+                **data,
+                "mode": "intent" if public_demo else data["mode"],
+                "token": session.token if public_demo else token,
+                "deployment": {"public_demo": public_demo},
+                "upload_limits": {
+                    "max_bytes": 2 * 1024 * 1024,
+                    "max_rows": 10000,
+                    "temporary": True,
+                },
+            }
+
+    class Server(ThreadingHTTPServer):
+        daemon_threads = True
+
+        def server_close(self):
+            super().server_close()
+            if public_demo:
+                sessions.close()
+            local_workspace.close()
 
     class Handler(BaseHTTPRequestHandler):
         def setup(self):
@@ -74,27 +103,26 @@ def make_server(workbench, port, *, public_demo=False, allowed_hosts=()):
                     session, created = sessions.get(self.headers.get("Cookie"), create=True)
                     if created:
                         self.new_session = session
-                    return self.reply(
-                        200,
-                        {
-                            **dashboard,
-                            "mode": "intent",
-                            "token": session.token,
-                            "deployment": {"public_demo": True},
-                        },
-                    )
-                return self.reply(200, {**workbench.dashboard(), "token": token})
+                    return self.reply(200, bootstrap(session))
+                return self.reply(200, bootstrap(None))
             if path == "/api/history":
                 if public_demo:
                     session, _ = sessions.get(self.headers.get("Cookie"))
                     return self.reply(200, sessions.history(session))
-                return self.reply(200, workbench.list_history())
+                with local_workspace.lock:
+                    return self.reply(200, local_workspace.active(workbench).list_history())
             if path == "/api/ai/status":
                 status = workbench.ai.status()
                 if public_demo:
                     status = {**status, "default_backend": "intent", "public_demo": True}
                 return self.reply(200, status)
-            assets = {"/": "index.html", "/app.js": "app.js", "/style.css": "style.css"}
+            assets = {
+                "/": "index.html",
+                "/app.js": "app.js",
+                "/upload.js": "upload.js",
+                "/style.css": "style.css",
+                "/orders-template.csv": "orders-template.csv",
+            }
             if path in assets:
                 asset = files("querylens").joinpath("static", assets[path])
                 return self.reply(
@@ -124,7 +152,15 @@ def make_server(workbench, port, *, public_demo=False, allowed_hosts=()):
             ):
                 return self.reply(403, {"error": "Refresh the QueryLens page and try again."})
             path = urlsplit(self.path).path
-            if path not in {"/api/plan", "/api/execute"}:
+            import_paths = {
+                "/api/import/inspect",
+                "/api/import/statuses",
+                "/api/import/validate",
+                "/api/import/commit",
+                "/api/import/reset",
+                "/api/import/cancel",
+            }
+            if path not in {"/api/plan", "/api/execute", *import_paths}:
                 return self.reply(404, {"error": "Not found."})
             if public_demo and not sessions.allow(session):
                 return self.reply(
@@ -135,80 +171,120 @@ def make_server(workbench, port, *, public_demo=False, allowed_hosts=()):
                     429, {"error": "The demo is running another query. Try again shortly."}
                 )
             status = 200
+            workspace = session.workspace if public_demo else local_workspace
             try:
                 length = int(self.headers.get("Content-Length", "0"))
-                if not 0 < length <= 24000:
+                maximum = (
+                    2_800_000
+                    if path == "/api/import/inspect"
+                    else 64000
+                    if path == "/api/import/validate"
+                    else 24000
+                )
+                if not 0 < length <= maximum:
                     raise QueryError("Request is empty or too large.")
                 body = json.loads(self.rfile.read(length))
                 if not isinstance(body, dict):
                     raise QueryError("Request must be a JSON object.")
-                if path == "/api/plan":
-                    try:
-                        backend = body.get("backend")
-                        if public_demo and body.get("sql") is None:
-                            if backend is not None and (
-                                not isinstance(backend, str)
-                                or backend not in {"intent", "examples"}
-                            ):
-                                raise QueryError(
-                                    "The free demo supports the trained classifier and examples. Run Qwen locally using the README instructions."
-                                )
-                            backend = backend or "intent"
-                        result = workbench.plan(
-                            body.get("question"),
-                            body.get("sql"),
-                            backend=backend,
-                            retrieval=body.get("retrieval", True),
-                        )
-                        if public_demo:
-                            sessions.remember(session, result)
-                    except QueryError as error:
-                        question = body.get("question")
-                        workbench.audit(
-                            question[:1000] if isinstance(question, str) else "Invalid request",
-                            "Planning",
-                            "rejected",
-                            detail=str(error),
-                        )
-                        if public_demo:
-                            sessions.record(
-                                session,
-                                question if isinstance(question, str) else "Invalid request",
+                with workspace.lock:
+                    active = workspace.active(workbench)
+                    if path in import_paths:
+                        if path.endswith("/inspect"):
+                            result = workspace.inspect(body, budget)
+                        elif path.endswith("/statuses"):
+                            result = workspace.statuses(body)
+                        elif path.endswith("/validate"):
+                            result = workspace.validate(body)
+                        elif path.endswith("/commit"):
+                            workspace.commit(body, workbench)
+                            if session:
+                                session.plans.clear()
+                                session.history.clear()
+                            result = bootstrap(session)
+                        elif path.endswith("/reset"):
+                            workspace.reset()
+                            if session:
+                                session.plans.clear()
+                                session.history.clear()
+                            result = bootstrap(session)
+                        else:
+                            workspace.cancel_preview()
+                            result = {"cancelled": True}
+                    elif path == "/api/plan":
+                        try:
+                            result = self.plan(active, body)
+                            workspace.remember(result)
+                            if public_demo:
+                                sessions.remember(session, result)
+                        except QueryError as error:
+                            question = body.get("question")
+                            active.audit(
+                                question[:1000] if isinstance(question, str) else "Invalid request",
                                 "Planning",
                                 "rejected",
                                 detail=str(error),
                             )
-                        raise
-                else:
-                    plan = None
-                    if public_demo:
-                        plan = sessions.plan(session, body.get("plan_id"))
-                        if plan is None:
+                            if public_demo:
+                                sessions.record(
+                                    session,
+                                    question if isinstance(question, str) else "Invalid request",
+                                    "Planning",
+                                    "rejected",
+                                    detail=str(error),
+                                )
+                            raise
+                    else:
+                        plan = workspace.plan(body.get("plan_id"))
+                        if plan is None or (
+                            public_demo and sessions.plan(session, body.get("plan_id")) is None
+                        ):
                             raise QueryError(
-                                "Query plan not found in this browser session. Draft and review a new plan."
+                                "Query plan not found in this browser workspace. Draft and review a new plan."
                             )
-                    result = workbench.execute(body.get("plan_id"))
-                    if public_demo:
-                        sessions.record(
-                            session, plan["question"], plan["source"], "success", result=result
-                        )
+                        result = active.execute(body.get("plan_id"))
+                        if public_demo:
+                            sessions.record(
+                                session, plan["question"], plan["source"], "success", result=result
+                            )
             except (QueryError, ValueError, UnicodeError) as error:
                 status, result = 400, {"error": str(error)[:2000]}
             except Exception:
-                self.reply(
-                    500, {"error": "Unexpected application error. Check the server console."}
+                status, result = (
+                    500,
+                    {
+                        "error": "Unexpected application error. Try again or check the server console."
+                    },
                 )
-                raise
+                self.log_error("Application error on %s", path)
             finally:
                 if public_demo:
                     try:
-                        workbench.prune_history()
+                        with workspace.lock:
+                            if not workspace.closed:
+                                workspace.active(workbench).prune_history()
                     finally:
                         operations.release()
             self.reply(status, result)
+
+        def plan(self, active, body):
+            backend = body.get("backend")
+            if public_demo and body.get("sql") is None:
+                if backend is not None and (
+                    not isinstance(backend, str) or backend not in {"intent", "examples"}
+                ):
+                    raise QueryError(
+                        "The free demo supports the trained classifier and examples. Run Qwen locally using the README instructions."
+                    )
+                backend = backend or "intent"
+            return active.plan(
+                body.get("question"),
+                body.get("sql"),
+                backend=backend,
+                retrieval=body.get("retrieval", True),
+            )
 
         def log_message(self, fmt, *args):
             # Query text and model responses are not written to console logs.
             super().log_message(fmt, *args)
 
-    return ThreadingHTTPServer(("0.0.0.0" if public_demo else "127.0.0.1", port), Handler)
+    return Server(("0.0.0.0" if public_demo else "127.0.0.1", port), Handler)

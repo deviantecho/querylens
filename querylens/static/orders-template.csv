@@ -1,0 +1,4 @@
+Order ID,Order date,Order total,Refund amount,Order status,Customer ID,Customer name,Region,Sales channel,Currency
+SHOP-001,2026-01-10,100.00,20.00,paid,CUST-01,Avery Shah,North,Web,USD
+SHOP-002,2026-01-15,50.00,0.00,cancelled,CUST-02,Riley Chen,South,Store,USD
+SHOP-003,2026-02-02,70.00,70.00,paid,CUST-01,Avery Shah,North,Store,USD

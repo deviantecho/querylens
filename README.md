@@ -14,6 +14,12 @@ The hosted demo includes the trained intent classifier, SQL workbench, CSV
 exports, and AI Lab. Qwen generation runs in the local version. The first visit
 after inactivity may take about a minute to start.
 
+**Use your own shop:** open **Your shop data** to upload a CSV or Excel orders
+sheet, match columns, check the totals, and switch to a temporary shop workspace.
+The dashboard and reviewed queries then use your uploaded orders. Start with the
+[example CSV](querylens/static/orders-template.csv) or read the
+[spreadsheet upload guide](UPLOAD_GUIDE.md).
+
 ## Documentation
 
 | Guide | Contents |
@@ -21,7 +27,8 @@ after inactivity may take about a minute to start.
 | [Deployment](DEPLOYMENT.md) | Current live URL, Render setup, environment variables, API, limits, and troubleshooting |
 | [Model card](MODEL_CARD.md) | Classifier training, pretrained Qwen inference, retrieval, and evaluation boundaries |
 | [Measured results](reports/README.md) | Saved scores, latency, sample sizes, failed cases, and model provenance |
-| [Validation](VALIDATION.md) | 66-test suite, nine analytical regression cases, CI, and live-demo verification |
+| [Validation](VALIDATION.md) | 97-test suite, nine analytical regression cases, CI, and live-demo verification |
+| [Shop uploads](UPLOAD_GUIDE.md) | CSV/XLSX column matching, checked totals, currencies, privacy, and temporary workspaces |
 | [Changelog](CHANGELOG.md) | Standalone application, local AI, public hosting, and documentation updates |
 
 ## Hosted demo and local application
@@ -29,6 +36,7 @@ after inactivity may take about a minute to start.
 | Capability | Public demo | Local application |
 | --- | --- | --- |
 | Dashboard, business models, SQL editor, CSV export | Available | Available |
+| Guided CSV / XLSX orders upload | Temporary, separate per browser session | Temporary, shared by this running local app |
 | Trained intent classifier and fixed examples | Available | Available |
 | Qwen generation with optional retrieved context | Local installation only | Requires the optional runtime and downloaded weights |
 | AI Lab classifier scores | Available | Available |
@@ -71,6 +79,10 @@ trained classifier and disables the Qwen option.
 
 ## Features
 
+- Guided CSV and Excel upload with worksheet selection, column suggestions,
+  status mapping, explicit date/number/currency choices, row errors, and a totals preview.
+- Temporary imported shop workspaces, protected from other public browser
+  sessions, with reset/removal and stale-plan invalidation when data changes.
 - Revenue dashboard, monthly trends, channel analysis, and CSV exports.
 - Declarative models mapping business names to physical tables.
 - Calculated fields with dependency ordering and cycle detection.
@@ -153,6 +165,16 @@ DuckDB remains responsible for database binding, optimization, and execution.
 
 The demo creates 2,376 synthetic orders and 48 synthetic customers covering 2025,
 using seed 42. All money is USD; there is no real customer information.
+
+Uploaded shops replace that sample only in the current workspace. Uploads need
+one row per order, a date, and an amount before refunds. Optional customer,
+region, channel, status, and refund fields enable richer reports. Missing fields
+are disclosed; reports that explicitly require an absent dimension are rejected.
+Each upload uses one selected currency, with no currency conversion. The
+dashboard period, labels, charts, and AI business context follow the imported data.
+Files go to the QueryLens server for processing and are not used for AI training.
+Limits are 2 MB, 10,000 orders, and 100,000 cells; see [retention and supported
+formats](UPLOAD_GUIDE.md) before using an export.
 
 | Metric | Definition |
 | --- | --- |

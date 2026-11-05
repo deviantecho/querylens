@@ -31,16 +31,28 @@ class AIEngine:
             return "local" if available(self.data_dir) else "intent"
         return selected if selected in BACKENDS else "intent"
 
-    def draft(self, question, backend=None, retrieval=True, repair=None):
+    def draft(
+        self,
+        question,
+        backend=None,
+        retrieval=True,
+        repair=None,
+        *,
+        context_override=None,
+        dataset=None,
+    ):
         backend = self.default_backend if backend is None else backend
         if not isinstance(backend, str) or backend not in BACKENDS:
             raise QueryError("Choose local, intent, examples, or ollama inference.")
         if not isinstance(retrieval, bool):
             raise QueryError("retrieval must be true or false.")
-        documents = self.retriever.search(question)
+        documents = (
+            context_override if context_override is not None else self.retriever.search(question)
+        )
         started = time.perf_counter()
         if backend == "local":
-            answer = self.llm.generate(question, documents, retrieval, repair)
+            options = {"dataset": dataset} if dataset else {}
+            answer = self.llm.generate(question, documents, retrieval, repair, **options)
             answer["source"] = "Local LLM / Qwen2.5-Coder-1.5B"
         elif backend == "intent":
             prediction = self.router.predict(question)
@@ -77,7 +89,8 @@ class AIEngine:
                 raise QueryError(
                     "Configure QUERYLENS_MODEL to use a separately installed local Ollama model."
                 )
-            sql, source, explanation = provider.generate(question, documents)
+            options = {"rules": context_override} if context_override is not None else {}
+            sql, source, explanation = provider.generate(question, documents, **options)
             answer = {
                 "sql": sql,
                 "source": source,

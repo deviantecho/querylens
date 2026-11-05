@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 from http.cookies import CookieError, SimpleCookie
 
 from querylens.service import timestamp
+from querylens.workspaces import UploadWorkspace
 
 COOKIE_NAME = "__Host-querylens-session"
 
@@ -20,6 +21,7 @@ class DemoSession:
     requests: deque = field(default_factory=deque)
     plans: OrderedDict = field(default_factory=OrderedDict)
     history: deque = field(default_factory=lambda: deque(maxlen=50))
+    workspace: UploadWorkspace = field(default_factory=UploadWorkspace)
 
 
 class DemoSessions:
@@ -38,21 +40,32 @@ class DemoSessions:
             pass
         key = cookies[COOKIE_NAME].value if COOKIE_NAME in cookies else None
         now = time.monotonic()
+        removed = []
         with self.lock:
             expired = [k for k, s in self.sessions.items() if now - s.touched >= self.ttl]
             for expired_key in expired:
-                del self.sessions[expired_key]
+                removed.append(self.sessions.pop(expired_key))
             session = self.sessions.get(key)
             created = session is None and create
             if created:
                 session = DemoSession()
                 self.sessions[session.key] = session
                 while len(self.sessions) > self.capacity:
-                    self.sessions.popitem(last=False)
+                    removed.append(self.sessions.popitem(last=False)[1])
             if session:
                 session.touched = now
                 self.sessions.move_to_end(session.key)
-            return session, created
+        # Never hold the sessions lock while waiting on an in-flight workspace operation.
+        for old in removed:
+            old.workspace.close()
+        return session, created
+
+    def close(self):
+        with self.lock:
+            sessions = list(self.sessions.values())
+            self.sessions.clear()
+        for session in sessions:
+            session.workspace.close()
 
     def allow(self, session):
         now = time.monotonic()

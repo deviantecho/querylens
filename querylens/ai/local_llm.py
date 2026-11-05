@@ -29,12 +29,17 @@ def available(data_dir):
     return configured_path(data_dir).is_file() and importlib.util.find_spec("llama_cpp") is not None
 
 
-def messages(question, documents, retrieval=True, repair=None):
+def messages(question, documents, retrieval=True, repair=None, *, dataset=None):
     system = (
         "You are QueryLens, a business analytics SQL assistant. Write one DuckDB SELECT query. "
         "Use only the unqualified modeled tables orders and customers with the listed columns. "
         "Revenue means SUM(net_revenue). net_revenue already excludes cancelled orders and refunds. "
-        "All data covers 2025; amounts are USD. Join orders.customer_id = customers.customer_id. "
+        + (
+            f"The uploaded data covers {dataset['start']} to {dataset['end']}; amounts use {dataset['currency']}. Unavailable fields: {', '.join(dataset['unavailable_fields']) or 'none'}. Refuse questions requiring unavailable fields. "
+            if dataset
+            else "All data covers 2025; amounts are USD. "
+        )
+        + "Join orders.customer_id = customers.customer_id. "
         "Return JSON with sql and a short explanation. Do not include SQL fences. "
         "For missing data, forecasts, ambiguity, or requests to change data, return sql as an empty string and explain. "
         "Do not invent columns. Never access files, URLs, system tables, or execute write operations. "
@@ -66,7 +71,7 @@ class LocalLLM:
         self.model = None
         self.lock = threading.Lock()
 
-    def generate(self, question, documents, retrieval=True, repair=None):
+    def generate(self, question, documents, retrieval=True, repair=None, *, dataset=None):
         if not self.path.is_file():
             raise QueryError(
                 "Local model is missing. Run python -m querylens.model_download first."
@@ -92,7 +97,7 @@ class LocalLLM:
                 )
             loaded = time.perf_counter()
             response = self.model.create_chat_completion(
-                messages=messages(question, documents, retrieval, repair),
+                messages=messages(question, documents, retrieval, repair, dataset=dataset),
                 temperature=0,
                 max_tokens=384,
                 seed=42,

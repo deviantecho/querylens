@@ -44,6 +44,12 @@ def create_dataset(path):
                     refund,
                 )
             )
+    write_dataset(path, customers, orders)
+
+
+def write_dataset(path, customers, orders):
+    """Create one warehouse atomically from already validated records."""
+    path.parent.mkdir(parents=True, exist_ok=True)
     with duckdb.connect(str(path)) as db:
         db.execute("BEGIN")
         db.execute(

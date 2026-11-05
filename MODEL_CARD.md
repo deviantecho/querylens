@@ -1,5 +1,20 @@
 # QueryLens AI model card
 
+## Uploaded shop data in version 0.4.0
+
+The [guided upload](UPLOAD_GUIDE.md) changes the warehouse used by the existing
+report templates; it does not retrain the classifier or expand its nine intent
+labels. Uploaded records never enter the training corpus or archived benchmark
+reports. Missing dimensions are disclosed and explicitly referenced unavailable
+fields are rejected during planning.
+
+Uploaded workspaces supply their own period, currency, available-field rules,
+and review context. Optional local Qwen receives that dataset context even when
+additional context retrieval is off; Ollama receives the uploaded business rules.
+The sample classifier/generation scores below remain historical results on
+curated synthetic questions and the original sample warehouse. They do not
+measure answer quality on newly uploaded shops or the updated prompt path.
+
 Documentation reviewed: 5 November 2026. The recorded experiment outputs in
 [`reports/`](reports/README.md) retain their original measurements and timestamps.
 

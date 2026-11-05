@@ -9,6 +9,11 @@ model inference on the bundled synthetic commerce warehouse. No hosted API was
 used. The corpus is small and curated, so scores are demonstration results, not
 production accuracy estimates.
 
+Version 0.4.0 adds [uploaded shop workspaces](../UPLOAD_GUIDE.md). These saved
+scores still describe the original synthetic warehouse and prompt path. Uploads
+are not training data, and no new generation-quality benchmark is claimed for
+uploaded shops.
+
 ## Live demo and archived evidence
 
 The [public AI Lab](https://querylens-deviantecho.onrender.com) displays the

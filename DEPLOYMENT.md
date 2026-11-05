@@ -41,6 +41,12 @@ AI Lab. Its entry point forces intent mode and the public API rejects Qwen and
 Ollama generation requests. Filters and custom aggregations can be written in
 the SQL editor; the classifier covers nine unfiltered report types.
 
+Visitors can also import a CSV or XLSX orders sheet through **Your shop data**.
+Column matching and totals must be checked before switching to a temporary,
+session-owned shop. See [UPLOAD_GUIDE.md](UPLOAD_GUIDE.md) for formats, defaults,
+privacy, limits, and the complete API flow. Imported shop data is not used for
+training; the benchmark reports remain sample-data experiments.
+
 Qwen's 1.12 GB model file cannot fit in the free instance's 512 MB RAM. Use
 [the local setup](README.md#local-ai-setup) for actual Qwen generation, with or
 without retrieved context. The public AI Lab displays saved local Qwen scores;
@@ -104,9 +110,10 @@ directory's `models/` subfolder or configure `QUERYLENS_GGUF` explicitly.
 | Runtime SQLite retention | Public pruning retains at most 2048 records in each of the plans/audit tables |
 | POST request budget | 20 per session and 120 across the process per rolling minute |
 | Concurrent planning/execution | One operation; excess requests receive HTTP 429 |
+| Upload capacity | Eight temporary upload workspaces, including pending previews, per process |
 | SQL execution | Read-only DuckDB, external access disabled, one database thread, 128 MB database memory limit |
 | Execution deadline / output cap | Five-second interrupt timer; at most 200 returned rows |
-| Input bounds | JSON body up to 24,000 bytes; question up to 1,000 characters; SQL up to 12,000 characters |
+| Input bounds | Normally 24,000-byte JSON; file inspection 2,800,000 bytes; column validation 64,000 bytes; question 1,000 characters; SQL 12,000 characters |
 
 The 128 MB limit belongs to DuckDB, not the entire Python process. HTTP request
 threads and application libraries have separate overhead. This is a bounded
@@ -115,12 +122,19 @@ portfolio demonstration, not a load-tested production service.
 Public history is separate between sessions but temporary. Restarting the
 process loses in-memory ownership/history; free-host restarts or redeploys can
 also erase runtime files. Expiry, eviction, or pruning can require a new draft.
-There are no user accounts or durable multi-tenant workspaces. Use synthetic
-questions only. Session controls do not turn the app into an identity provider.
+There are no user accounts or durable multi-tenant workspaces. Session controls
+do not turn the app into an identity provider. Uploads use a distinct temporary
+warehouse/history directory and separate business context. Reset, normal server
+shutdown, and session cleanup remove it; expiry cleanup runs when sessions are
+next accessed. A restart ends access and free-host storage is ephemeral.
+Keep original exports. Another tab with the same cookie shares the workspace.
 
 Local mode keeps its existing loopback listener, per-process POST token, 256 MB
 DuckDB memory limit, two database threads, and persisted SQLite plans/history.
-The row limit and execution interrupt timer apply in both modes.
+The row limit and execution interrupt timer apply in both modes. Local uploaded
+shops are temporary and shared by browsers connected to that running local
+server. Uploaded history is separate from retained local sample-shop history.
+Changing or removing the dataset invalidates reviewed HTTP plans.
 
 ## HTTP API
 
@@ -135,6 +149,12 @@ the HTTPS session cookie from bootstrap and send its token for POST requests.
 | `GET /api/history` | Current session's recent history; returns an empty list without a public session. |
 | `POST /api/plan` | Validate a classifier/example draft or supplied SQL, compile models, bind-check, and store a reviewed-plan candidate. |
 | `POST /api/execute` | Execute the caller's stored plan after review; public callers must own the plan. |
+| `POST /api/import/inspect` | Read a bounded CSV/XLSX file and return worksheet/header/preview information. |
+| `POST /api/import/statuses` | List the selected status column's values for explicit mapping. |
+| `POST /api/import/validate` | Validate every row, report issues, and prepare a totals preview. |
+| `POST /api/import/commit` | Activate only the caller's checked server-held import snapshot. |
+| `POST /api/import/cancel` | Discard a pending preview, keeping the active shop. |
+| `POST /api/import/reset` | Remove the current upload and return to the sample shop. |
 
 A classifier planning body:
 

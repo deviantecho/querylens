@@ -6,6 +6,7 @@ import sqlite3
 import threading
 import time
 import uuid
+from contextlib import contextmanager
 from datetime import date, datetime, timezone
 
 import duckdb
@@ -13,6 +14,7 @@ import duckdb
 from querylens.ai.engine import AIEngine
 from querylens.catalog import EXAMPLES, RULES, SCHEMA
 from querylens.dataset import create_dataset
+from querylens.imports import dataset_rules
 from querylens.planner import QueryPlanner
 from querylens.policy import QueryError
 
@@ -30,11 +32,17 @@ def native(value):
 
 
 class Workbench:
-    def __init__(self, data_dir, *, memory_limit="256MB", threads=2):
+    def __init__(
+        self, data_dir, *, memory_limit="256MB", threads=2, seed=True, ai=None, dataset_info=None
+    ):
         self.data_dir = data_dir
         self.database = data_dir / "commerce.duckdb"
         self.history = data_dir / "history.sqlite3"
-        create_dataset(self.database)
+        if seed:
+            create_dataset(self.database)
+        self.dataset_info = dataset_info
+        self.rules = dataset_rules(dataset_info) if dataset_info else RULES
+        self.resource_limits = {"memory_limit": memory_limit, "threads": threads}
         self.lock = threading.RLock()
         self.database_config = {
             "enable_external_access": "false",
@@ -47,10 +55,16 @@ class Workbench:
                 "CREATE TABLE IF NOT EXISTS audit (id TEXT PRIMARY KEY, created TEXT, question TEXT, source TEXT, status TEXT, duration_ms REAL, row_count INTEGER, detail TEXT)"
             )
         self.planner = QueryPlanner()
-        self.ai = AIEngine(data_dir)
+        self.ai = ai if ai is not None else AIEngine(data_dir)
 
+    @contextmanager
     def _history(self):
-        return sqlite3.connect(self.history, timeout=10)
+        db = sqlite3.connect(self.history, timeout=10)
+        try:
+            with db:
+                yield db
+        finally:
+            db.close()
 
     def _run(self, planned, limit=200):
         # Bound expensive queries as well as the number of returned rows. External
@@ -87,6 +101,23 @@ class Workbench:
         try:
             with self.lock:
                 compiled = self.planner.compile(sql)
+                if self.dataset_info:
+                    import sqlglot
+                    from sqlglot import exp
+
+                    columns = {
+                        c.name.lower()
+                        for c in sqlglot.parse_one(compiled.query_sql, read="duckdb").find_all(
+                            exp.Column
+                        )
+                    }
+                    missing = columns.intersection(self.dataset_info["unavailable_fields"])
+                    if missing:
+                        raise QueryError(
+                            "Your upload does not provide "
+                            + ", ".join(sorted(missing))
+                            + ". Match these columns in a new upload to use this report."
+                        )
                 with duckdb.connect(
                     str(self.database),
                     read_only=True,
@@ -102,10 +133,15 @@ class Workbench:
     def plan(self, question, sql=None, backend=None, retrieval=True, repair=True):
         if not isinstance(question, str) or not question.strip() or len(question) > 1000:
             raise QueryError("Enter a question of 1 to 1,000 characters.")
-        context = self.ai.retriever.search(question)
+        context = self.rules if self.dataset_info else self.ai.retriever.search(question)
+        dataset_options = (
+            {"context_override": self.rules, "dataset": self.dataset_info}
+            if self.dataset_info
+            else {}
+        )
         trace = {"backend": "manual", "attempts": []}
         if sql is None:
-            answer = self.ai.draft(question, backend, retrieval)
+            answer = self.ai.draft(question, backend, retrieval, **dataset_options)
             sql, source, explanation = answer["sql"], answer["source"], answer["explanation"]
             context = answer["context"]
             trace = {**answer["trace"], "attempts": []}
@@ -122,7 +158,11 @@ class Workbench:
             if not repair or trace["backend"] != "local":
                 raise
             answer = self.ai.draft(
-                question, "local", retrieval, repair={"sql": sql, "error": str(error)}
+                question,
+                "local",
+                retrieval,
+                repair={"sql": sql, "error": str(error)},
+                **dataset_options,
             )
             sql, source, explanation = answer["sql"], answer["source"], answer["explanation"]
             compiled = self._compile(sql)
@@ -143,6 +183,7 @@ class Workbench:
             "context": context,
             "ai_trace": trace,
             "created": timestamp(),
+            "dataset_id": self.dataset_info["id"] if self.dataset_info else "sample",
         }
         with self._history() as db:
             db.execute("INSERT INTO plans VALUES (?, ?)", (plan["id"], json.dumps(plan)))
@@ -230,7 +271,16 @@ class Workbench:
             "channels": channels,
             "examples": [{"question": e["question"]} for e in EXAMPLES],
             "schema": SCHEMA,
-            "rules": RULES,
-            "period": "Jan - Dec 2025",
-            "dataset": "Synthetic commerce data / seed 42",
+            "rules": self.rules,
+            "period": f"{self.dataset_info['start']} – {self.dataset_info['end']}"
+            if self.dataset_info
+            else "Jan - Dec 2025",
+            "dataset": self.dataset_info
+            or {
+                "id": "sample",
+                "kind": "sample",
+                "currency": "USD",
+                "shop_name": "Sample shop",
+                "warnings": [],
+            },
         }

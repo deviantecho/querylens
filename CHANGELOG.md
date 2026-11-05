@@ -1,5 +1,24 @@
 # QueryLens changelog
 
+## 5 November 2026 — Version 0.4.0 — Guided shop spreadsheet upload
+
+- Added a three-stage CSV/XLSX flow: choose a worksheet, match columns and
+  statuses, then compare checked totals before importing. Included an example CSV.
+- Added explicit date, number-format, and currency choices; row-level validation;
+  duplicate-order/customer-conflict checks; bounded parsing; and formula rejection.
+- Added temporary uploaded shops with independent warehouses and history,
+  anonymous public-session isolation, preview expiry/capacity controls, reset,
+  and stale-plan invalidation when the dataset changes.
+- Made dashboard dates, arbitrary-length monthly charts, currency labels, and
+  business context follow the uploaded data. Reports requiring absent dimensions
+  explain the missing field rather than returning an invented breakdown.
+- Reused the existing trained intent model without training on uploaded orders.
+  Optional local Qwen/Ollama prompts receive uploaded business context.
+- Fixed SQLite history connections remaining open after transaction contexts,
+  enabling immediate removal of temporary shop files on Windows.
+- Added 31 tests; all 97 application tests and all nine sample analytical
+  regression cases passed locally. Existing saved model experiments are unchanged.
+
 ## 5 November 2026 — Current documentation and public demo
 
 - Published the canonical demo at
@@ -47,7 +66,7 @@
   screenshots, and reports in
   [deviantecho/querylens](https://github.com/deviantecho/querylens).
 
-The application package remains version **0.3.0**. These entries describe the
+The application package is version **0.4.0**. These entries describe the
 implemented changes; they do not imply additional versioned releases or new
 benchmark runs. See [VALIDATION.md](VALIDATION.md) for evidence and
 [reports/README.md](reports/README.md) for measured model results.

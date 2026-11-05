@@ -4,12 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "querylens-analytics"
-version = "0.3.0"
+version = "0.4.0"
 description = "An independent analytics workbench with declarative models and reviewable SQL"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
-dependencies = ["duckdb==1.5.6", "sqlglot==30.29.0", "scikit-learn==1.9.1"]
+dependencies = ["duckdb==1.5.6", "sqlglot==30.29.0", "scikit-learn==1.9.1", "openpyxl==3.1.5", "defusedxml==0.7.1"]
 
 [project.optional-dependencies]
 dev = ["pytest==9.2.0", "ruff==0.17.3"]

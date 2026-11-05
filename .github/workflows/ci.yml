@@ -11,5 +11,6 @@ jobs:
       - run: python -m pip install '.[dev]'
       - run: ruff check querylens tests_querylens
       - run: ruff format --check querylens tests_querylens
+      - run: node --check querylens/static/app.js && node --check querylens/static/upload.js
       - run: pytest
       - run: python -m querylens --eval

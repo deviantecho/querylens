@@ -1,17 +1,19 @@
 # QueryLens validation
 
 Documentation reviewed: **5 November 2026 (IST)**. Application package version:
-**0.3.0**. The [live demo](https://querylens-deviantecho.onrender.com) uses the
+**0.4.0**. The [live demo](https://querylens-deviantecho.onrender.com) uses the
 public-mode implementation verified below.
 
 ## Automated checks
 
-The current suite contains **66 tests**, including four public-demo tests added
-to the original 62-test compiler, workbench, and AI suite. All 66 passed in
+The current suite contains **97 tests**, including 31 spreadsheet-import tests
+added to the previous 66-test compiler, workbench, AI, and public-demo suite.
+All 97 passed locally on Python 3.11 / Windows. The independent analytical
+regression command also passed **9/9** cases. The same checks run in
 [GitHub Actions](https://github.com/deviantecho/querylens/actions/workflows/ci.yml)
-on Python 3.11 / Ubuntu. The independent analytical regression command also
-passed **9/9** cases. A recorded passing run for the public-demo implementation
-and README is [available here](https://github.com/deviantecho/querylens/actions/runs/41915141740).
+on Python 3.11 / Ubuntu. The earlier 66-test public-demo run remains
+[available here](https://github.com/deviantecho/querylens/actions/runs/41915141740)
+as historical evidence; it does not verify the new upload implementation.
 
 | Area | Verification |
 | --- | --- |
@@ -23,9 +25,12 @@ and README is [available here](https://github.com/deviantecho/querylens/actions/
 | Local HTTP API | Bootstrap, plan/review/execute flow, request tokens, malformed requests, rejected SQL, history |
 | Public HTTP API | Per-browser plan/history separation, token separation, Host/Origin checks, unavailable-model rejection, manual filtered SQL |
 | Public session lifecycle | Request budget, plan cap, inactive-session expiry, session capacity, bounded SQLite records, required hostname |
+| Spreadsheet input | CSV and worksheet-selected XLSX, Excel numeric/date cells, explicit locale/currency/status choices, malformed files, duplicate headers/orders, ZIP expansion and row limits, formula/error rejection |
+| Uploaded data | Independently checked totals, invalid-row blocking, customer consistency, unavailable-field rejection, uploaded prompt context, failed replacement preservation |
+| Uploaded workspace lifecycle | HTTP import/preview/commit/reset in both local and public modes, foreign-preview denial, private results, stale-plan rejection, expiry/capacity release, and actual temporary-file removal on Windows |
 
 Ruff lint and formatting checks pass. JavaScript syntax was checked with
-`node --check querylens/static/app.js`. The CI workflow installs the package,
+`node --check` for both `app.js` and `upload.js`. The CI workflow installs the package,
 runs Ruff and pytest, then executes the nine-case analytical regression suite.
 CI does not download Qwen weights or execute the real Qwen benchmark; model
 adapters are simulated where necessary in unit tests. Real-model experiments
@@ -64,6 +69,14 @@ The local workflow was checked with actual Qwen drafting/execution, classifier
 inference on different wording, SQL and inference provenance, AI Lab results,
 and desktop/mobile layouts. The optional model runs on the local computer with
 no hosted model API or per-query API charge.
+
+The upload workflow was also exercised with an actual CSV file and a two-sheet
+Excel workbook. Selecting the orders sheet and INR produced a checked preview
+of net revenue 80, two completed orders, AOV 40, and refund rate 52.94%. Import
+updated the reporting window to March–April 2024 and returned 80 from a trained
+classifier query. HTTP integration tests verify reset and cross-session isolation.
+The new cleanup tests caught and fixed SQLite connections remaining open after
+their transaction context, which previously prevented Windows file removal.
 
 ## Public deployment verification
 
